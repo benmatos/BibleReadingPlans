@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useMemo, useEffect } from 'react';
-import { readingPlan } from '@/data/reading-plan';
+import { readingPlan as defaultReadingPlan } from '@/data/reading-plan';
 import { useProgress } from '@/hooks/use-progress';
+import { usePlans, type ReadingPlan } from '@/hooks/use-plans';
 import {
   SidebarProvider,
   Sidebar,
@@ -16,15 +17,25 @@ import {
   SidebarFooter,
 } from '@/components/ui/sidebar';
 import { ReadingDayView } from '@/components/reading-day-view';
-import { CheckCircle2, Circle, Settings } from 'lucide-react';
+import { CheckCircle2, Circle, Settings, BookOpen } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 
 export default function BibleReadingPlanPage() {
-  const [selectedDay, setSelectedDay] = useState(() => readingPlan[0]);
-  const { completedDays, toggleDayCompletion, isDayCompleted, isLoaded } = useProgress();
+  const { plans, isLoaded: plansLoaded } = usePlans();
+  const [selectedPlan, setSelectedPlan] = useState<ReadingPlan | null>(null);
+  const [selectedDay, setSelectedDay] = useState(() => defaultReadingPlan[0]);
+  const { completedDays, toggleDayCompletion, isDayCompleted, isLoaded: progressLoaded } = useProgress(selectedPlan?.id);
+
+  const readingPlan = defaultReadingPlan; // For now, we only have one reading plan data.
+
+  useEffect(() => {
+    if (plansLoaded && plans.length > 0 && !selectedPlan) {
+      setSelectedPlan(plans[0]);
+    }
+  }, [plans, plansLoaded, selectedPlan]);
 
   const handleSelectDay = (day: typeof readingPlan[0]) => {
     setSelectedDay(day);
@@ -45,15 +56,19 @@ export default function BibleReadingPlanPage() {
   const progressPercentage = useMemo(() => {
     if (readingPlan.length === 0) return 0;
     return Math.round((completedCount / readingPlan.length) * 100);
-  }, [completedCount]);
+  }, [completedCount, readingPlan.length]);
   
   // Effect to scroll the active day into view
   useEffect(() => {
-    const element = document.querySelector(`[data-day-id='${selectedDay.day}']`);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (selectedPlan) {
+        const element = document.querySelector(`[data-plan-id='${selectedPlan.id}']`);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
     }
-  }, [selectedDay]);
+  }, [selectedPlan]);
+  
+  const isLoaded = plansLoaded && progressLoaded;
 
   return (
     <SidebarProvider>
@@ -66,43 +81,49 @@ export default function BibleReadingPlanPage() {
                     </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col text-left">
-                    <h2 className="font-headline text-lg font-semibold">Reading Plan</h2>
-                    <p className="text-sm text-sidebar-foreground/80">Chronological</p>
+                    <h2 className="font-headline text-lg font-semibold">Planos de Leitura</h2>
+                    <p className="text-sm text-sidebar-foreground/80">Selecione um plano</p>
                 </div>
             </div>
-            <div className="mt-4 space-y-1">
-                {isLoaded ? (
-                    <>
-                        <Progress value={progressPercentage} className="h-2" />
-                        <p className="text-xs text-sidebar-foreground/80">{completedCount} of {readingPlan.length} days completed</p>
-                    </>
-                ) : (
-                    <>
-                        <Skeleton className="h-2 w-full" />
-                        <Skeleton className="h-3 w-3/4 mx-auto" />
-                    </>
-                )}
-            </div>
+             {selectedPlan && (
+                <div className="mt-4 space-y-1">
+                    {isLoaded ? (
+                        <>
+                            <Progress value={progressPercentage} className="h-2" />
+                            <p className="text-xs text-sidebar-foreground/80">{completedCount} de {readingPlan.length} dias completos</p>
+                        </>
+                    ) : (
+                        <>
+                            <Skeleton className="h-2 w-full" />
+                            <Skeleton className="h-3 w-3/4 mx-auto" />
+                        </>
+                    )}
+                </div>
+            )}
         </SidebarHeader>
         <SidebarContent>
           <SidebarMenu>
-            {readingPlan.map((day) => (
-              <SidebarMenuItem key={day.day} data-day-id={day.day}>
+            {!isLoaded && Array.from({length: 3}).map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}
+            {isLoaded && plans.map((plan) => (
+              <SidebarMenuItem key={plan.id} data-plan-id={plan.id}>
                 <SidebarMenuButton
-                  onClick={() => handleSelectDay(day)}
-                  isActive={selectedDay.day === day.day}
+                  onClick={() => setSelectedPlan(plan)}
+                  isActive={selectedPlan?.id === plan.id}
                   className="h-auto py-2"
                 >
-                  {isLoaded ? (
-                      isDayCompleted(day.day) ? <CheckCircle2 className="text-green-300" /> : <Circle className="opacity-50"/>
-                  ) : <Skeleton className="h-4 w-4 rounded-full" />}
+                  <BookOpen />
                   <div className="flex flex-col items-start overflow-hidden">
-                    <span className="font-semibold">{`Day ${day.day}`}</span>
-                    <span className="text-xs text-sidebar-foreground/70 truncate w-full">{day.title}</span>
+                    <span className="font-semibold">{plan.name}</span>
+                    <span className="text-xs text-sidebar-foreground/70 truncate w-full">{plan.startBook} a {plan.endBook}</span>
                   </div>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
+             {isLoaded && plans.length === 0 && (
+                <div className="p-4 text-center text-sm text-sidebar-foreground/70">
+                    Nenhum plano encontrado. Crie um em "Gerenciar Planos".
+                </div>
+             )}
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
@@ -111,7 +132,7 @@ export default function BibleReadingPlanPage() {
                     <Link href="/plans" passHref>
                         <SidebarMenuButton>
                             <Settings />
-                            Manage Plans
+                            Gerenciar Planos
                         </SidebarMenuButton>
                     </Link>
                 </SidebarMenuItem>
@@ -122,13 +143,14 @@ export default function BibleReadingPlanPage() {
         <header className="flex items-center justify-between md:justify-center p-4 border-b relative h-16">
             <SidebarTrigger className="md:hidden"/>
             <div className="hidden md:block">
-                <h1 className="font-headline text-2xl font-bold text-center truncate">{selectedDay.title}</h1>
+                <h1 className="font-headline text-2xl font-bold text-center truncate">{selectedPlan?.name || 'Selecione um Plano'}</h1>
             </div>
              <div className="md:hidden flex-1 text-center pr-8">
-                 <h1 className="font-headline text-xl font-bold truncate">{selectedDay.title}</h1>
+                 <h1 className="font-headline text-xl font-bold truncate">{selectedPlan?.name || 'Selecione um Plano'}</h1>
             </div>
         </header>
         <main className="p-4 md:p-6 lg:p-8">
+          {selectedPlan ? (
             <ReadingDayView 
                 day={selectedDay}
                 isCompleted={isDayCompleted(selectedDay.day)}
@@ -138,6 +160,14 @@ export default function BibleReadingPlanPage() {
                 isFirstDay={selectedDay.day === 1}
                 isLastDay={selectedDay.day === readingPlan.length}
             />
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
+                <BookOpen className="w-16 h-16 mb-4" />
+                <h2 className="text-2xl font-bold font-headline">Bem-vindo!</h2>
+                <p>Selecione um plano de leitura na barra lateral para começar.</p>
+                <p className="mt-2 text-sm">Não tem um plano? <Link href="/plans" className="text-primary underline">Crie um agora!</Link></p>
+            </div>
+          )}
         </main>
       </SidebarInset>
     </SidebarProvider>

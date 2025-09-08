@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { bibleBooks } from '@/data/reading-plan';
 import { useState } from 'react';
-import { Home, Trash2, Edit, PlusCircle, ArrowLeft } from 'lucide-react';
+import { Trash2, Edit, PlusCircle, ArrowLeft } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 
@@ -49,7 +49,7 @@ export default function ManagePlansPage() {
   };
   
   const openDialog = (plan?: ReadingPlan) => {
-      setCurrentPlan(plan || { name: '', startBook: '', endBook: '' });
+      setCurrentPlan(plan || { name: '', startBook: 'Gênesis', endBook: 'Apocalipse' });
       setIsDialogOpen(true);
   }
 
@@ -97,7 +97,7 @@ export default function ManagePlansPage() {
                       value={currentPlan?.name || ''}
                       onChange={(e) => setCurrentPlan({ ...currentPlan, name: e.target.value })}
                       className="col-span-3"
-                      placeholder="Ex: Plano de Fim de Ano"
+                      placeholder="Ex: Plano Cronológico"
                     />
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
@@ -142,6 +142,7 @@ export default function ManagePlansPage() {
                   </div>
                 </div>
                 <DialogFooter>
+                  <Button type="button" onClick={closeDialog} variant="outline">Cancelar</Button>
                   <Button type="button" onClick={handleSave}>Salvar</Button>
                 </DialogFooter>
               </DialogContent>
