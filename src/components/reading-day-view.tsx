@@ -10,6 +10,8 @@ import { Skeleton } from './ui/skeleton';
 import { ScrollArea } from './ui/scroll-area';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import { useSettings } from '@/hooks/use-settings';
+import { cn } from '@/lib/utils';
+import type { FontSize } from '@/hooks/use-settings';
 
 interface ReadingDayViewProps {
   day: typeof readingPlan[0];
@@ -19,6 +21,7 @@ interface ReadingDayViewProps {
   onNavigate: (offset: number) => void;
   isFirstDay: boolean;
   isLastDay: boolean;
+  fontSize: FontSize;
 }
 
 interface Verse {
@@ -38,7 +41,15 @@ interface ApiResponse {
     translation_note: string;
 }
 
-export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, onNavigate, isFirstDay, isLastDay }: ReadingDayViewProps) {
+const fontSizeClasses: Record<FontSize, string> = {
+  sm: 'text-sm',
+  base: 'text-base',
+  lg: 'text-lg',
+  xl: 'text-xl',
+};
+
+
+export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, onNavigate, isFirstDay, isLastDay, fontSize }: ReadingDayViewProps) {
   const [verses, setVerses] = useState<Verse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -106,7 +117,7 @@ export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, o
               </div>
             ) : (
               <ScrollArea className="h-full pr-4">
-                  <div className="prose dark:prose-invert">
+                  <div className={cn("prose dark:prose-invert max-w-none", fontSizeClasses[fontSize])}>
                       {verses.map(verse => (
                           <p key={verse.verse} className="mb-4 leading-relaxed">
                             <sup className="pr-2 font-bold">{verse.verse}</sup> 

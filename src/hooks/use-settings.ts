@@ -5,8 +5,8 @@ import { useState, useEffect, useCallback } from "react";
 
 const SETTINGS_KEY = "bible-reading-settings";
 
-type Theme = "light" | "dark" | "system";
-type FontSize = "sm" | "base" | "lg" | "xl";
+export type Theme = "light" | "dark" | "system";
+export type FontSize = "sm" | "base" | "lg" | "xl";
 
 const fontSizes: FontSize[] = ["sm", "base", "lg", "xl"];
 

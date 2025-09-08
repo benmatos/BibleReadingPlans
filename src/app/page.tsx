@@ -6,6 +6,7 @@ import { bibleBooks, bibleBookChapters } from '@/data/reading-plan';
 import { useProgress } from '@/hooks/use-progress';
 import { usePlans, type ReadingPlan } from '@/hooks/use-plans';
 import { useLastRead } from '@/hooks/use-last-read';
+import { useSettings } from '@/hooks/use-settings';
 import { SettingsControls } from '@/components/settings-controls';
 import {
   SidebarProvider,
@@ -88,6 +89,7 @@ export default function BibleReadingPlanPage() {
   const [selectedDay, setSelectedDay] = useState<Day | null>(null);
   const { completedDays, toggleDayCompletion, isDayCompleted, isLoaded: progressLoaded } = useProgress(selectedPlan?.id);
   const { getLastReadDay, setLastReadDay, isLoaded: lastReadLoaded } = useLastRead();
+  const { settings } = useSettings();
 
   useEffect(() => {
     setIsClient(true);
@@ -301,6 +303,7 @@ export default function BibleReadingPlanPage() {
                 onNavigate={handleNavigateDay}
                 isFirstDay={selectedDay.day === 1}
                 isLastDay={selectedDay.day === readingPlan.length}
+                fontSize={settings.fontSize}
             />
           )}
         </main>
@@ -308,7 +311,3 @@ export default function BibleReadingPlanPage() {
     </SidebarProvider>
   );
 }
-
-    
-
-    

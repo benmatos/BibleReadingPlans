@@ -11,24 +11,25 @@ import { cn } from '@/lib/utils';
 // for theme and font size and apply them to the html/body tags.
 // We can't do this in a server component.
 
-const fontSizesMap: Record<string, string> = {
-  sm: 'font-size-sm',
-  base: 'font-size-base',
-  lg: 'font-size-lg',
-  xl: 'font-size-xl',
-};
-
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const { settings } = useSettings();
-  const { fontSize } = settings;
+
+  // This useEffect handles applying the theme class (light/dark) to the root element.
+  useEffect(() => {
+    const root = window.document.documentElement;
+    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    const currentTheme = settings.theme === "system" ? systemTheme : settings.theme;
+    
+    root.classList.remove("light", "dark");
+    root.classList.add(currentTheme);
+  }, [settings.theme]);
 
   return (
-    <html lang="en" className={cn(fontSize && fontSizesMap[fontSize])}>
+    <html lang="en">
       <head>
         <title>Bible Reading Plans</title>
         <meta name="description" content="Track your Bible reading journey." />
