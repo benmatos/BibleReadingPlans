@@ -109,7 +109,7 @@ export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, o
                 </Alert>
               </div>
             ) : (
-              <ScrollArea className="h-full pr-4">
+              <ScrollArea className={cn("h-full pr-4", `text-${fontSize}`)}>
                   <Prose>
                       {verses.map(verse => (
                           <p key={verse.verse}>
