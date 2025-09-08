@@ -6,6 +6,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { useSettings } from '@/hooks/use-settings';
 import { useEffect } from 'react';
 import { cn } from '@/lib/utils';
+import type { Metadata } from 'next';
 
 // This is a client component because we need to access user settings
 // for theme and font size and apply them to the html/body tags.
@@ -27,13 +28,14 @@ export default function RootLayout({
     root.classList.remove("light", "dark");
     root.classList.add(currentTheme);
   }, [settings.theme]);
-
+  
   return (
     <html lang="en">
       <head>
         <title>Bible Reading Plans</title>
         <meta name="description" content="Track your Bible reading journey." />
         <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#3b82f6" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
