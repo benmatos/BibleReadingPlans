@@ -40,7 +40,7 @@ interface ApiResponse {
 
 
 export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, onNavigate, isFirstDay, isLastDay }: ReadingDayViewProps) {
-  const [scriptureText, setScriptureText] = useState('');
+  const [verses, setVerses] = useState<Verse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -62,9 +62,7 @@ export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, o
         }
         const data: ApiResponse = await response.json();
         
-        // Remove os números dos versículos do texto completo
-        const cleanText = data.text.replace(/\[\d+\]/g, '').trim();
-        setScriptureText(cleanText);
+        setVerses(data.verses);
 
       } catch (e: any) {
         setError(e.message || 'Ocorreu um erro ao buscar o texto.');
@@ -119,8 +117,12 @@ export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, o
               </div>
             ) : (
               <ScrollArea className="h-full pr-4">
-                  <div className="prose prose-lg max-w-none text-foreground/90 whitespace-pre-wrap">
-                      {scriptureText}
+                  <div className="prose prose-lg max-w-none text-foreground/90">
+                      {verses.map(verse => (
+                          <p key={verse.verse}>
+                            <sup>{verse.verse}</sup> {verse.text}
+                          </p>
+                      ))}
                   </div>
               </ScrollArea>
             )}
