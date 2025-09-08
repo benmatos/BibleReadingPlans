@@ -1,3 +1,4 @@
+
 export const readingPlan = [
   { day: 1, reading: 'Gênesis 1' },
   { day: 2, reading: 'Gênesis 2' },
@@ -26,21 +27,18 @@ export const mockScriptureTexts: Record<string, string> = {
 5 E Deus chamou à luz Dia; e às trevas chamou Noite. E foi a tarde e a manhã, o dia primeiro.
 6 E disse Deus: "Haja um firmamento no meio das águas, e haja separação entre águas e águas."
 7 E fez Deus o firmamento, e fez separação entre as águas que estavam debaixo do firmamento e as águas que estavam sobre o firmamento. E assim foi.
-8 E chamou Deus ao firmamento Céus. E foi a tarde e a manhã, o dia segundo.
-... (e assim por diante)`,
+8 E chamou Deus ao firmamento Céus. E foi a tarde e a manhã, o dia segundo.`,
   'Gênesis 2': `1 Assim foram concluídos os céus e a terra, e tudo o que neles há.
 2 No sétimo dia, Deus já havia concluído a obra que realizara, e nesse dia descansou.
 3 Abençoou Deus o sétimo dia e o santificou, porque nele descansou de toda a obra que realizara na criação.
 4 Esta é a história das origens dos céus e da terra, no tempo em que foram criados.
 5 Quando o Senhor Deus fez a terra e os céus, ainda não tinha brotado nenhum arbusto no campo, e nenhuma planta havia germinado, porque o Senhor Deus ainda não tinha feito chover sobre a terra, e também não havia homem para cultivar o solo.
 6 Todavia, brotava da terra um vapor que regava toda a superfície do solo.
-7 Então o Senhor Deus formou o homem do pó da terra e soprou em suas narinas o fôlego de vida, e o homem se tornou um ser vivente.
-... (e assim por diante)`,
+7 Então o Senhor Deus formou o homem do pó da terra e soprou em suas narinas o fôlego de vida, e o homem se tornou um ser vivente.`,
   'Gênesis 3': `1 A serpente era o mais astuto de todos os animais selvagens que o Senhor Deus tinha feito. E ela disse à mulher: "Foi isto mesmo que Deus disse: 'Não comam de nenhum fruto das árvores do jardim'?"
 2 Respondeu a mulher à serpente: "Podemos comer do fruto das árvores do jardim,
 3 mas Deus disse: 'Não comam do fruto da árvore que está no meio do jardim, nem toquem nele; do contrário, vocês morrerão'."
 4 Disse a serpente à mulher: "Certamente não morrerão!
 5 Deus sabe que, no dia em que dele comerem, seus olhos se abrirão, e vocês, como Deus, serão conhecedores do bem e do mal".
-6 Quando a mulher viu que a árvore parecia agradável ao paladar, era atraente aos olhos e, além disso, desejável para dela se obter discernimento, tomou do seu fruto, comeu-o e o deu a seu marido, que comeu também.
-... (e assim por diante)`,
+6 Quando a mulher viu que a árvore parecia agradável ao paladar, era atraente aos olhos e, além disso, desejável para dela se obter discernimento, tomou do seu fruto, comeu-o e o deu a seu marido, que comeu também.`
 };
