@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from 'react';
-import { readingPlan as defaultReadingPlan } from '@/data/reading-plan';
+import { bibleBooks } from '@/data/reading-plan';
 import { useProgress } from '@/hooks/use-progress';
 import { usePlans, type ReadingPlan } from '@/hooks/use-plans';
 import {
@@ -25,29 +25,57 @@ import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 
+interface Day {
+  day: number;
+  reading: string;
+}
+
 export default function BibleReadingPlanPage() {
   const [isClientLoaded, setIsClientLoaded] = useState(false);
   const { plans, isLoaded: plansLoaded } = usePlans();
   const [selectedPlan, setSelectedPlan] = useState<ReadingPlan | null>(null);
-  const [selectedDay, setSelectedDay] = useState(() => defaultReadingPlan[0]);
+  const [readingPlan, setReadingPlan] = useState<Day[]>([]);
+  const [selectedDay, setSelectedDay] = useState<Day | null>(null);
   const { completedDays, toggleDayCompletion, isDayCompleted, isLoaded: progressLoaded } = useProgress(selectedPlan?.id);
 
-  const readingPlan = defaultReadingPlan; // For now, we only have one reading plan data.
   const isLoaded = plansLoaded && progressLoaded && isClientLoaded;
 
   useEffect(() => {
     setIsClientLoaded(true);
   }, []);
+  
+  useEffect(() => {
+    if (selectedPlan) {
+      const startBookIndex = bibleBooks.indexOf(selectedPlan.startBook);
+      const endBookIndex = bibleBooks.indexOf(selectedPlan.endBook);
+
+      if (startBookIndex !== -1 && endBookIndex !== -1 && startBookIndex <= endBookIndex) {
+        const planBooks = bibleBooks.slice(startBookIndex, endBookIndex + 1);
+        const newPlan = planBooks.map((book, index) => ({
+          day: index + 1,
+          reading: `${book} 1` // Placeholder, in real app this would be more complex
+        }));
+        setReadingPlan(newPlan);
+        setSelectedDay(newPlan[0]);
+      } else {
+         setReadingPlan([]);
+         setSelectedDay(null);
+      }
+    } else {
+      setReadingPlan([]);
+      setSelectedDay(null);
+    }
+  }, [selectedPlan]);
+
 
   useEffect(() => {
     if (selectedPlan && plans.length > 0 && plansLoaded) {
       const currentPlan = plans.find(p => p.id === selectedPlan.id);
       if (!currentPlan) {
         setSelectedPlan(null);
-        setSelectedDay(readingPlan[0]);
       }
     }
-  }, [plans, selectedPlan, readingPlan, plansLoaded]);
+  }, [plans, selectedPlan, plansLoaded]);
   
   // Effect to scroll the active day into view
   useEffect(() => {
@@ -59,11 +87,12 @@ export default function BibleReadingPlanPage() {
     }
   }, [selectedPlan]);
 
-  const handleSelectDay = (day: typeof readingPlan[0]) => {
+  const handleSelectDay = (day: Day) => {
     setSelectedDay(day);
   };
   
   const handleNavigateDay = (offset: number) => {
+    if (!selectedDay) return;
     const currentIndex = readingPlan.findIndex(d => d.day === selectedDay.day);
     const newIndex = currentIndex + offset;
     if (newIndex >= 0 && newIndex < readingPlan.length) {
@@ -178,7 +207,7 @@ export default function BibleReadingPlanPage() {
                 <p>Selecione um plano de leitura na barra lateral para começar.</p>
                 <p className="mt-2 text-sm">Não tem um plano? <Link href="/plans" className="text-primary underline">Crie um agora!</Link></p>
             </div>
-          ) : !isLoaded ? (
+          ) : !isLoaded || !selectedDay ? (
               <div className="max-w-4xl mx-auto">
                 <Card>
                   <CardHeader>
