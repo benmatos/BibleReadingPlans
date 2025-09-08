@@ -17,7 +17,7 @@ import {
   SidebarFooter,
 } from '@/components/ui/sidebar';
 import { ReadingDayView } from '@/components/reading-day-view';
-import { CheckCircle2, Circle, Settings, BookOpen } from 'lucide-react';
+import { Settings, BookOpen } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -33,9 +33,19 @@ export default function BibleReadingPlanPage() {
 
   useEffect(() => {
     if (plansLoaded && plans.length > 0 && !selectedPlan) {
-      setSelectedPlan(plans[0]);
+      // Don't auto-select a plan
     }
   }, [plans, plansLoaded, selectedPlan]);
+
+  useEffect(() => {
+    if (selectedPlan && plans.length > 0) {
+      const currentPlan = plans.find(p => p.id === selectedPlan.id);
+      if (!currentPlan) {
+        setSelectedPlan(null);
+        setSelectedDay(readingPlan[0]);
+      }
+    }
+  }, [plans, selectedPlan, readingPlan]);
 
   const handleSelectDay = (day: typeof readingPlan[0]) => {
     setSelectedDay(day);
