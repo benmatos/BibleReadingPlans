@@ -92,11 +92,9 @@ export default function BibleReadingPlanPage() {
     setIsClient(true);
   }, []);
 
-  const isLoaded = plansLoaded && progressLoaded && lastReadLoaded;
+  const isLoaded = isClient && plansLoaded && progressLoaded && lastReadLoaded;
 
-  const generatePlan = useCallback((plan: ReadingPlan | null): Day[] => {
-    if (!plan) return [];
-
+  const generatePlan = useCallback((plan: ReadingPlan): Day[] => {
     const startBookIndex = bibleBooks.indexOf(plan.startBook);
     const endBookIndex = bibleBooks.indexOf(plan.endBook);
 
@@ -122,30 +120,39 @@ export default function BibleReadingPlanPage() {
 
   // Effect to initialize the plan and select the last read day
   useEffect(() => {
-    if (!isLoaded || !isClient) return;
+    if (!isLoaded) return;
 
-    let currentPlan = selectedPlan;
-    if (!currentPlan && plans.length > 0) {
-      currentPlan = plans[0];
-      setSelectedPlan(currentPlan);
-    }
-    
-    if (currentPlan) {
-      const newPlan = generatePlan(currentPlan);
+    const planToUse = selectedPlan ?? (plans.length > 0 ? plans[0] : null);
+
+    if (planToUse) {
+      if (planToUse.id !== selectedPlan?.id) {
+        setSelectedPlan(planToUse);
+      }
+      
+      const newPlan = generatePlan(planToUse);
       setReadingPlan(newPlan);
       
-      if (newPlan.length > 0) {
-        const lastReadDayNumber = getLastReadDay(currentPlan.id) ?? 1;
-        const dayToSelect = newPlan.find(d => d.day === lastReadDayNumber) || newPlan[0];
-        setSelectedDay(dayToSelect);
-      } else {
-        setSelectedDay(null);
+      if (newPlan.length > 0 && !selectedDay) {
+         const lastReadDayNumber = getLastReadDay(planToUse.id) ?? 1;
+         const dayToSelect = newPlan.find(d => d.day === lastReadDayNumber) || newPlan[0];
+         setSelectedDay(dayToSelect);
       }
     } else {
-      setReadingPlan([]);
-      setSelectedDay(null);
+        setReadingPlan([]);
+        setSelectedDay(null);
+        setSelectedPlan(null);
     }
-  }, [selectedPlan, plans, isLoaded, isClient, getLastReadDay, generatePlan]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoaded, plans, selectedPlan, generatePlan]);
+
+  // Handle plan selection from sidebar
+  const handleSelectPlan = (plan: ReadingPlan) => {
+    if (plan.id !== selectedPlan?.id) {
+        setSelectedPlan(plan);
+        setReadingPlan([]); // Reset plan
+        setSelectedDay(null); // Reset day
+    }
+  }
 
   // Persist the last read day when selectedDay changes
   useEffect(() => {
@@ -186,7 +193,7 @@ export default function BibleReadingPlanPage() {
     return Math.round((completedCount / readingPlan.length) * 100);
   }, [completedCount, readingPlan.length]);
   
-  if (!isClient) {
+  if (!isClient || !isLoaded) {
     return <PageSkeleton />;
   }
 
@@ -227,7 +234,7 @@ export default function BibleReadingPlanPage() {
             {isLoaded && plans.map((plan) => (
               <SidebarMenuItem key={plan.id} data-plan-id={plan.id}>
                 <SidebarMenuButton
-                  onClick={() => setSelectedPlan(plan)}
+                  onClick={() => handleSelectPlan(plan)}
                   isActive={selectedPlan?.id === plan.id}
                   className="h-auto py-2"
                 >
@@ -270,31 +277,7 @@ export default function BibleReadingPlanPage() {
             </div>
         </header>
         <main className="p-4 md:p-6 lg:p-8">
-          {!isLoaded ? (
-              <div className="max-w-4xl mx-auto">
-                <Card>
-                  <CardHeader>
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                       <div>
-                          <Skeleton className="h-8 w-24 mb-2" />
-                          <Skeleton className="h-5 w-32" />
-                       </div>
-                       <Skeleton className="h-10 w-32 rounded-lg" />
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                     <div className="space-y-4">
-                        <Skeleton className="h-6 w-40" />
-                        <div className="space-y-2">
-                           <Skeleton className="h-4 w-full" />
-                           <Skeleton className="h-4 w-full" />
-                           <Skeleton className="h-4 w-5/6" />
-                        </div>
-                     </div>
-                  </CardContent>
-                </Card>
-              </div>
-          ) : !selectedPlan ? (
+          {!selectedPlan ? (
             <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
                 <BookOpen className="w-16 h-16 mb-4" />
                 <h2 className="text-2xl font-bold font-headline">Bem-vindo!</h2>
@@ -323,3 +306,5 @@ export default function BibleReadingPlanPage() {
     </SidebarProvider>
   );
 }
+
+    
