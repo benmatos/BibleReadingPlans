@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
@@ -17,24 +18,20 @@ export function usePlans() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
+    let savedPlans: ReadingPlan[] = [];
     try {
-      const savedPlans = localStorage.getItem(PLANS_KEY);
-      if (savedPlans) {
-        const parsed = JSON.parse(savedPlans);
+      const storedPlans = localStorage.getItem(PLANS_KEY);
+      if (storedPlans) {
+        const parsed = JSON.parse(storedPlans);
         if (Array.isArray(parsed)) {
-            setPlans(parsed);
-        } else {
-            setPlans([]);
+            savedPlans = parsed;
         }
-      } else {
-        setPlans([]);
       }
     } catch (error) {
       console.error("Failed to load plans from localStorage", error);
-      setPlans([]);
-    } finally {
-      setIsLoaded(true);
     }
+    setPlans(savedPlans);
+    setIsLoaded(true);
   }, []);
 
   const savePlans = (newPlans: ReadingPlan[]) => {

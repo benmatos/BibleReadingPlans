@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { bibleBooks } from '@/data/reading-plan';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Trash2, Edit, PlusCircle, ArrowLeft, BookOpen } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
@@ -32,11 +32,6 @@ export default function ManagePlansPage() {
   const { plans, addPlan, updatePlan, deletePlan, isLoaded } = usePlans();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentPlan, setCurrentPlan] = useState<Partial<ReadingPlan> | null>(null);
-  const [isClientLoaded, setIsClientLoaded] = useState(false);
-
-  useEffect(() => {
-    setIsClientLoaded(true);
-  }, []);
 
   const handleSave = () => {
     if (currentPlan && currentPlan.name && currentPlan.startBook && currentPlan.endBook) {
@@ -62,17 +57,6 @@ export default function ManagePlansPage() {
   const closeDialog = () => {
       setIsDialogOpen(false);
       setCurrentPlan(null);
-  }
-
-  if (!isClientLoaded) {
-    return (
-        <div className="flex h-screen w-screen items-center justify-center">
-            <div className="flex flex-col items-center gap-4">
-                <BookOpen className="h-12 w-12 text-primary" />
-                <p className="text-muted-foreground">Carregando planos...</p>
-            </div>
-        </div>
-    );
   }
 
   return (
@@ -170,9 +154,15 @@ export default function ManagePlansPage() {
             {!isLoaded ? (
                 Array.from({length: 3}).map((_, i) => <Skeleton key={i} className="h-48 w-full" />)
             ) : plans.length === 0 ? (
-                <p className="text-muted-foreground col-span-full text-center">
-                    Nenhum plano de leitura encontrado. Crie um para começar.
-                </p>
+                <div className="col-span-full text-center py-12">
+                    <BookOpen className="w-12 h-12 mx-auto text-muted-foreground" />
+                    <p className="mt-4 text-muted-foreground">
+                        Nenhum plano de leitura encontrado.
+                    </p>
+                    <p className="text-sm text-muted-foreground/80">
+                        Crie um para começar a acompanhar seu progresso.
+                    </p>
+                </div>
             ) : (
                 plans.map((plan) => (
                 <Card key={plan.id} className="shadow-lg">

@@ -31,18 +31,13 @@ interface Day {
 }
 
 export default function BibleReadingPlanPage() {
-  const [isClientLoaded, setIsClientLoaded] = useState(false);
   const { plans, isLoaded: plansLoaded } = usePlans();
   const [selectedPlan, setSelectedPlan] = useState<ReadingPlan | null>(null);
   const [readingPlan, setReadingPlan] = useState<Day[]>([]);
   const [selectedDay, setSelectedDay] = useState<Day | null>(null);
   const { completedDays, toggleDayCompletion, isDayCompleted, isLoaded: progressLoaded } = useProgress(selectedPlan?.id);
 
-  const isLoaded = plansLoaded && progressLoaded && isClientLoaded;
-
-  useEffect(() => {
-    setIsClientLoaded(true);
-  }, []);
+  const isLoaded = plansLoaded && progressLoaded;
   
   useEffect(() => {
     if (selectedPlan) {
@@ -124,17 +119,6 @@ export default function BibleReadingPlanPage() {
     return Math.round((completedCount / readingPlan.length) * 100);
   }, [completedCount, readingPlan.length]);
   
-  if (!isClientLoaded) {
-    return (
-        <div className="flex h-screen w-screen items-center justify-center">
-            <div className="flex flex-col items-center gap-4">
-                <BookOpen className="h-12 w-12 text-primary" />
-                <p className="text-muted-foreground">Carregando seu plano de leitura...</p>
-            </div>
-        </div>
-    );
-  }
-
   return (
     <SidebarProvider>
       <Sidebar>
