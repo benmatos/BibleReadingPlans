@@ -51,13 +51,13 @@ export default function BibleReadingPlanPage() {
   
   // Effect to scroll the active day into view
   useEffect(() => {
-    if (selectedPlan && isLoaded) {
+    if (selectedPlan) {
         const element = document.querySelector(`[data-plan-id='${selectedPlan.id}']`);
         if (element) {
           element.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     }
-  }, [selectedPlan, isLoaded]);
+  }, [selectedPlan]);
 
   const handleSelectDay = (day: typeof readingPlan[0]) => {
     setSelectedDay(day);
@@ -171,7 +171,14 @@ export default function BibleReadingPlanPage() {
             </div>
         </header>
         <main className="p-4 md:p-6 lg:p-8">
-          {!isLoaded ? (
+          {!selectedPlan ? (
+            <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
+                <BookOpen className="w-16 h-16 mb-4" />
+                <h2 className="text-2xl font-bold font-headline">Bem-vindo!</h2>
+                <p>Selecione um plano de leitura na barra lateral para começar.</p>
+                <p className="mt-2 text-sm">Não tem um plano? <Link href="/plans" className="text-primary underline">Crie um agora!</Link></p>
+            </div>
+          ) : !isLoaded ? (
               <div className="max-w-4xl mx-auto">
                 <Card>
                   <CardHeader>
@@ -195,7 +202,7 @@ export default function BibleReadingPlanPage() {
                   </CardContent>
                 </Card>
               </div>
-          ) : selectedPlan ? (
+          ) : (
             <ReadingDayView 
                 day={selectedDay}
                 isCompleted={isDayCompleted(selectedDay.day)}
@@ -205,13 +212,6 @@ export default function BibleReadingPlanPage() {
                 isFirstDay={selectedDay.day === 1}
                 isLastDay={selectedDay.day === readingPlan.length}
             />
-          ) : (
-            <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
-                <BookOpen className="w-16 h-16 mb-4" />
-                <h2 className="text-2xl font-bold font-headline">Bem-vindo!</h2>
-                <p>Selecione um plano de leitura na barra lateral para começar.</p>
-                <p className="mt-2 text-sm">Não tem um plano? <Link href="/plans" className="text-primary underline">Crie um agora!</Link></p>
-            </div>
           )}
         </main>
       </SidebarInset>
