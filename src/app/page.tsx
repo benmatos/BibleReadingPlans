@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { bibleBooks, bibleBookChapters } from '@/data/reading-plan';
 import { useProgress } from '@/hooks/use-progress';
 import { usePlans, type ReadingPlan } from '@/hooks/use-plans';
@@ -47,53 +47,57 @@ export default function BibleReadingPlanPage() {
     }
   }, [isLoaded, plans, selectedPlan]);
 
-  useEffect(() => {
-    if (selectedPlan) {
-      const startBookIndex = bibleBooks.indexOf(selectedPlan.startBook);
-      const endBookIndex = bibleBooks.indexOf(selectedPlan.endBook);
+  const generatePlan = useCallback((plan: ReadingPlan | null): Day[] => {
+    if (!plan) return [];
 
-      if (startBookIndex !== -1 && endBookIndex !== -1 && startBookIndex <= endBookIndex) {
-        const planBooks = bibleBooks.slice(startBookIndex, endBookIndex + 1);
-        
-        let dayCounter = 1;
-        const newPlan: Day[] = [];
+    const startBookIndex = bibleBooks.indexOf(plan.startBook);
+    const endBookIndex = bibleBooks.indexOf(plan.endBook);
 
-        planBooks.forEach(book => {
-          const chapters = bibleBookChapters[book] || 1;
-          for (let chapter = 1; chapter <= chapters; chapter++) {
-            newPlan.push({
-              day: dayCounter++,
-              reading: `${book} ${chapter}`
-            });
-          }
+    if (startBookIndex === -1 || endBookIndex === -1 || startBookIndex > endBookIndex) {
+      return [];
+    }
+
+    const planBooks = bibleBooks.slice(startBookIndex, endBookIndex + 1);
+    let dayCounter = 1;
+    const newPlan: Day[] = [];
+
+    planBooks.forEach(book => {
+      const chapters = bibleBookChapters[book] || 1;
+      for (let chapter = 1; chapter <= chapters; chapter++) {
+        newPlan.push({
+          day: dayCounter++,
+          reading: `${book} ${chapter}`
         });
-        
-        setReadingPlan(newPlan);
-
-        if (newPlan.length > 0) {
-            const lastReadDayNumber = getLastReadDay(selectedPlan.id);
-            const dayToSelect = newPlan.find(d => d.day === lastReadDayNumber) || newPlan[0];
-            setSelectedDay(dayToSelect);
-        } else {
-            setSelectedDay(null);
-        }
-      } else {
-         setReadingPlan([]);
-         setSelectedDay(null);
       }
-    } else {
+    });
+    return newPlan;
+  }, []);
+
+
+  useEffect(() => {
+    if (selectedPlan && isLoaded) {
+      const newPlan = generatePlan(selectedPlan);
+      setReadingPlan(newPlan);
+
+      if (newPlan.length > 0) {
+        const lastReadDayNumber = getLastReadDay(selectedPlan.id) ?? 1;
+        const dayToSelect = newPlan.find(d => d.day === lastReadDayNumber) || newPlan[0];
+        setSelectedDay(dayToSelect);
+      } else {
+        setSelectedDay(null);
+      }
+    } else if (!selectedPlan) {
       setReadingPlan([]);
       setSelectedDay(null);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedPlan, isLoaded, getLastReadDay]);
+  }, [selectedPlan, isLoaded, getLastReadDay, generatePlan]);
 
   // Persist the last read day
   useEffect(() => {
     if (selectedPlan?.id && selectedDay?.day) {
         setLastReadDay(selectedPlan.id, selectedDay.day);
     }
-  }, [selectedPlan?.id, selectedDay?.day, setLastReadDay]);
+  }, [selectedPlan, selectedDay, setLastReadDay]);
 
 
   useEffect(() => {
@@ -114,7 +118,7 @@ export default function BibleReadingPlanPage() {
         }
     }
   }, [selectedPlan]);
-
+  
   const handleSelectDay = (day: Day) => {
     setSelectedDay(day);
   };
@@ -270,5 +274,3 @@ export default function BibleReadingPlanPage() {
     </SidebarProvider>
   );
 }
-
-    
