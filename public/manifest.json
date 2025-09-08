@@ -1,0 +1,21 @@
+{
+  "name": "Planos de Leitura da Bíblia",
+  "short_name": "Planos Bíblia",
+  "description": "Acompanhe sua jornada de leitura da Bíblia.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#EBF4FF",
+  "theme_color": "#3B82F6",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

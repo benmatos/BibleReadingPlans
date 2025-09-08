@@ -33,6 +33,7 @@ export default function RootLayout({
       <head>
         <title>Bible Reading Plans</title>
         <meta name="description" content="Track your Bible reading journey." />
+        <link rel="manifest" href="/manifest.json" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
