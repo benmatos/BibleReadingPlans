@@ -39,14 +39,6 @@ interface ApiResponse {
     translation_note: string;
 }
 
-const fontSizesMap: Record<string, string> = {
-  sm: '14px',
-  base: '16px',
-  lg: '18px',
-  xl: '20px',
-};
-
-
 export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, onNavigate, isFirstDay, isLastDay }: ReadingDayViewProps) {
   const [verses, setVerses] = useState<Verse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -116,7 +108,7 @@ export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, o
               </div>
             ) : (
               <ScrollArea className="h-full pr-4">
-                  <div style={{ fontSize: fontSizesMap[fontSize] || '16px' }}>
+                  <div>
                       {verses.map(verse => (
                           <p key={verse.verse} className="mb-4 leading-relaxed">
                             <sup className="pr-2 font-bold">{verse.verse}</sup> 

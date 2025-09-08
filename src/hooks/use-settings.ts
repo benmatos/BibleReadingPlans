@@ -20,6 +20,7 @@ export function useSettings() {
     theme: "system",
     fontSize: "base",
   });
+   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     let savedSettings: Partial<Settings> = {};
@@ -35,17 +36,20 @@ export function useSettings() {
       console.error("Failed to load settings from localStorage", error);
     }
     setSettings(prev => ({...prev, ...savedSettings}));
+    setIsLoaded(true);
   }, []);
 
   const saveSettings = useCallback((newSettings: Partial<Settings>) => {
+    if (!isLoaded) return;
     try {
       const updatedSettings = { ...settings, ...newSettings };
       localStorage.setItem(SETTINGS_KEY, JSON.stringify(updatedSettings));
       setSettings(updatedSettings);
-    } catch (error) {
+    } catch (error)
+      {
       console.error("Failed to save settings to localStorage", error);
     }
-  }, [settings]);
+  }, [settings, isLoaded]);
 
   const setTheme = useCallback((theme: Theme) => {
     saveSettings({ theme });
@@ -71,6 +75,7 @@ export function useSettings() {
 
 
   useEffect(() => {
+    if (!isLoaded) return;
     const root = window.document.documentElement;
     
     // Handle Theme
@@ -80,7 +85,7 @@ export function useSettings() {
     root.classList.remove("light", "dark");
     root.classList.add(currentTheme);
 
-  }, [settings.theme]);
+  }, [settings.theme, isLoaded]);
 
   return { 
     theme: settings.theme, 
