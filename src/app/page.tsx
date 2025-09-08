@@ -13,12 +13,14 @@ import {
   SidebarMenuButton,
   SidebarInset,
   SidebarTrigger,
+  SidebarFooter,
 } from '@/components/ui/sidebar';
 import { ReadingDayView } from '@/components/reading-day-view';
-import { CheckCircle2, Circle } from 'lucide-react';
+import { CheckCircle2, Circle, Settings } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
+import Link from 'next/link';
 
 export default function BibleReadingPlanPage() {
   const [selectedDay, setSelectedDay] = useState(() => readingPlan[0]);
@@ -103,6 +105,18 @@ export default function BibleReadingPlanPage() {
             ))}
           </SidebarMenu>
         </SidebarContent>
+        <SidebarFooter>
+            <SidebarMenu>
+                <SidebarMenuItem>
+                    <Link href="/plans" passHref>
+                        <SidebarMenuButton>
+                            <Settings />
+                            Manage Plans
+                        </SidebarMenuButton>
+                    </Link>
+                </SidebarMenuItem>
+            </SidebarMenu>
+        </SidebarFooter>
       </Sidebar>
       <SidebarInset>
         <header className="flex items-center justify-between md:justify-center p-4 border-b relative h-16">
