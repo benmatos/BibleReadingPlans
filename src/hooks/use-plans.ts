@@ -12,13 +12,6 @@ export interface ReadingPlan {
   endBook: string;
 }
 
-const defaultPlan: ReadingPlan = {
-  id: 'default',
-  name: 'Plano Cronológico Padrão',
-  startBook: 'Gênesis',
-  endBook: 'Apocalipse',
-};
-
 export function usePlans() {
   const [plans, setPlans] = useState<ReadingPlan[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -28,17 +21,17 @@ export function usePlans() {
       const savedPlans = localStorage.getItem(PLANS_KEY);
       if (savedPlans) {
         const parsed = JSON.parse(savedPlans);
-        if (Array.isArray(parsed) && parsed.length > 0) {
+        if (Array.isArray(parsed)) {
             setPlans(parsed);
         } else {
-            setPlans([defaultPlan]);
+            setPlans([]);
         }
       } else {
-        setPlans([defaultPlan]);
+        setPlans([]);
       }
     } catch (error) {
       console.error("Failed to load plans from localStorage", error);
-      setPlans([defaultPlan]);
+      setPlans([]);
     } finally {
       setIsLoaded(true);
     }
@@ -63,7 +56,6 @@ export function usePlans() {
   }, []);
   
   const deletePlan = useCallback((planId: string) => {
-    if (planId === 'default') return; // Cannot delete default plan
     setPlans(prev => prev.filter(p => p.id !== planId));
   }, []);
 

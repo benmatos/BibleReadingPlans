@@ -160,21 +160,22 @@ export default function ManagePlansPage() {
                   {/* Future content can go here, like progress */}
                 </CardContent>
                 <CardFooter className="flex justify-end gap-2">
-                  {plan.id !== 'default' && (
-                    <>
-                        <Button variant="ghost" size="icon" onClick={() => openDialog(plan)}>
-                            <Edit className="h-4 w-4" />
-                            <span className="sr-only">Editar</span>
-                        </Button>
-                        <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" onClick={() => deletePlan(plan.id)}>
-                            <Trash2 className="h-4 w-4" />
-                            <span className="sr-only">Excluir</span>
-                        </Button>
-                    </>
-                  )}
+                  <Button variant="ghost" size="icon" onClick={() => openDialog(plan)}>
+                      <Edit className="h-4 w-4" />
+                      <span className="sr-only">Editar</span>
+                  </Button>
+                  <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" onClick={() => deletePlan(plan.id)}>
+                      <Trash2 className="h-4 w-4" />
+                      <span className="sr-only">Excluir</span>
+                  </Button>
                 </CardFooter>
               </Card>
             ))}
+             {isLoaded && plans.length === 0 && (
+              <p className="text-muted-foreground col-span-full text-center">
+                Nenhum plano de leitura encontrado. Crie um para começar.
+              </p>
+            )}
           </div>
         </div>
       </main>
