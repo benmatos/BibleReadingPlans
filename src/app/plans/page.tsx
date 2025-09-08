@@ -23,15 +23,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { bibleBooks } from '@/data/reading-plan';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Trash2, Edit, PlusCircle, ArrowLeft, BookOpen } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 
 export default function ManagePlansPage() {
+  const [isClient, setIsClient] = useState(false);
   const { plans, addPlan, updatePlan, deletePlan, isLoaded } = usePlans();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentPlan, setCurrentPlan] = useState<Partial<ReadingPlan> | null>(null);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleSave = () => {
     if (currentPlan && currentPlan.name && currentPlan.startBook && currentPlan.endBook) {
@@ -57,6 +62,27 @@ export default function ManagePlansPage() {
   const closeDialog = () => {
       setIsDialogOpen(false);
       setCurrentPlan(null);
+  }
+
+  if (!isClient) {
+    return (
+        <div className="min-h-screen bg-background p-4 md:p-6 lg:p-8">
+            <header className="p-4 border-b flex items-center gap-4">
+                <Skeleton className="h-10 w-10 rounded-md" />
+                <Skeleton className="h-8 w-64" />
+            </header>
+            <main className="max-w-4xl mx-auto mt-4">
+                 <div className="flex justify-end mb-4">
+                     <Skeleton className="h-10 w-32 rounded-md" />
+                 </div>
+                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    <Skeleton className="h-48 w-full" />
+                    <Skeleton className="h-48 w-full" />
+                    <Skeleton className="h-48 w-full" />
+                 </div>
+            </main>
+        </div>
+    )
   }
 
   return (

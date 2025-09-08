@@ -40,9 +40,12 @@ export function useLastRead() {
   }, []);
 
   const setLastReadDay = useCallback((planId: string, day: number) => {
-    const newLastRead = { ...lastReadDays, [planId]: day };
-    saveLastRead(newLastRead);
-  }, [lastReadDays, saveLastRead]);
+    setLastReadDays(prev => {
+        const newLastRead = { ...prev, [planId]: day };
+        saveLastRead(newLastRead);
+        return newLastRead;
+    });
+  }, [saveLastRead]);
   
   const getLastReadDay = useCallback((planId: string): number | null => {
     return lastReadDays[planId] || null;

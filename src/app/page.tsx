@@ -31,13 +31,66 @@ interface Day {
   reading: string;
 }
 
+function PageSkeleton() {
+  return (
+    <div className="flex h-screen w-screen">
+      <div className="hidden md:block border-r">
+         <div className="w-64 p-4 space-y-4">
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-4 w-3/4" />
+            <div className="pt-4 space-y-2">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+            </div>
+         </div>
+      </div>
+      <div className="flex-1 p-4 md:p-6 lg:p-8">
+        <header className="flex items-center justify-between md:justify-center p-4 border-b relative h-16 mb-4">
+            <Skeleton className="h-8 w-8 md:hidden" />
+            <Skeleton className="h-8 w-48" />
+        </header>
+        <div className="max-w-4xl mx-auto">
+            <Card>
+                <CardHeader>
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <Skeleton className="h-8 w-24 mb-2" />
+                        <Skeleton className="h-5 w-32" />
+                    </div>
+                    <Skeleton className="h-10 w-32 rounded-lg" />
+                </div>
+                </CardHeader>
+                <CardContent>
+                    <div className="space-y-4">
+                    <Skeleton className="h-6 w-40" />
+                    <div className="space-y-2">
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-5/6" />
+                    </div>
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+
 export default function BibleReadingPlanPage() {
+  const [isClient, setIsClient] = useState(false);
   const { plans, isLoaded: plansLoaded } = usePlans();
   const [selectedPlan, setSelectedPlan] = useState<ReadingPlan | null>(null);
   const [readingPlan, setReadingPlan] = useState<Day[]>([]);
   const [selectedDay, setSelectedDay] = useState<Day | null>(null);
   const { completedDays, toggleDayCompletion, isDayCompleted, isLoaded: progressLoaded } = useProgress(selectedPlan?.id);
   const { getLastReadDay, setLastReadDay, isLoaded: lastReadLoaded } = useLastRead();
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const isLoaded = plansLoaded && progressLoaded && lastReadLoaded;
 
@@ -69,34 +122,30 @@ export default function BibleReadingPlanPage() {
 
   // Effect to initialize the plan and select the last read day
   useEffect(() => {
-    if (!isLoaded) return;
+    if (!isLoaded || !isClient) return;
 
     let currentPlan = selectedPlan;
-
-    // If no plan is selected, or the selected plan is no longer in the list, select the first plan
-    if ((!currentPlan && plans.length > 0) || (currentPlan && !plans.some(p => p.id === currentPlan.id))) {
-      currentPlan = plans[0] || null;
+    if (!currentPlan && plans.length > 0) {
+      currentPlan = plans[0];
       setSelectedPlan(currentPlan);
     }
     
     if (currentPlan) {
-        const newPlan = generatePlan(currentPlan);
-        setReadingPlan(newPlan);
-        
-        if (newPlan.length > 0) {
-            const lastReadDayNumber = getLastReadDay(currentPlan.id) ?? 1;
-            const dayToSelect = newPlan.find(d => d.day === lastReadDayNumber) || newPlan[0];
-            if (selectedDay?.day !== dayToSelect?.day || selectedDay?.reading !== dayToSelect?.reading) {
-                setSelectedDay(dayToSelect);
-            }
-        } else {
-            setSelectedDay(null);
-        }
+      const newPlan = generatePlan(currentPlan);
+      setReadingPlan(newPlan);
+      
+      if (newPlan.length > 0) {
+        const lastReadDayNumber = getLastReadDay(currentPlan.id) ?? 1;
+        const dayToSelect = newPlan.find(d => d.day === lastReadDayNumber) || newPlan[0];
+        setSelectedDay(dayToSelect);
+      } else {
+        setSelectedDay(null);
+      }
     } else {
       setReadingPlan([]);
       setSelectedDay(null);
     }
-  }, [selectedPlan, plans, isLoaded, getLastReadDay, generatePlan, selectedDay]);
+  }, [selectedPlan, plans, isLoaded, isClient, getLastReadDay, generatePlan]);
 
   // Persist the last read day when selectedDay changes
   useEffect(() => {
@@ -137,6 +186,10 @@ export default function BibleReadingPlanPage() {
     return Math.round((completedCount / readingPlan.length) * 100);
   }, [completedCount, readingPlan.length]);
   
+  if (!isClient) {
+    return <PageSkeleton />;
+  }
+
   return (
     <SidebarProvider>
       <Sidebar>
