@@ -91,18 +91,17 @@ body {
     @apply bg-background text-foreground;
   }
   
-  .font-size-sm {
+  .font-size-sm p {
     @apply text-sm;
   }
-  .font-size-base {
+  .font-size-base p {
     @apply text-base;
   }
-  .font-size-lg {
+  .font-size-lg p {
     @apply text-lg;
   }
-  .font-size-xl {
+  .font-size-xl p {
     @apply text-xl;
   }
 }
-
     

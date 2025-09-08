@@ -10,6 +10,8 @@ import { Skeleton } from './ui/skeleton';
 import { ScrollArea } from './ui/scroll-area';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import { useSettings } from '@/hooks/use-settings';
+import { cn } from '@/lib/utils';
+import { Prose } from './ui/prose';
 
 interface ReadingDayViewProps {
   day: typeof readingPlan[0];
@@ -108,14 +110,14 @@ export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, o
               </div>
             ) : (
               <ScrollArea className="h-full pr-4">
-                  <div className={`max-w-none text-foreground/90 font-size-${fontSize}`}>
+                  <Prose>
                       {verses.map(verse => (
-                          <p key={verse.verse} className="mb-4">
+                          <p key={verse.verse}>
                             <sup className="pr-2 font-bold">{verse.verse}</sup> 
                             {verse.text}
                           </p>
                       ))}
-                  </div>
+                  </Prose>
               </ScrollArea>
             )}
           </div>
