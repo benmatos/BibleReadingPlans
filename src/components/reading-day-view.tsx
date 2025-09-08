@@ -81,17 +81,8 @@ export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, o
         <CardHeader>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <CardTitle className="font-headline text-3xl text-accent">{`Dia ${day.day}`}</CardTitle>
-              <CardDescription className="font-body text-base mt-1">{day.reading}</CardDescription>
+              <CardDescription className="font-body text-xl mt-1">{day.reading}</CardDescription>
             </div>
-            {isLoaded ? (
-                <div className="flex items-center space-x-3 p-3 rounded-lg bg-secondary/50 shrink-0">
-                    <Checkbox id={`day-${day.day}`} checked={isCompleted} onCheckedChange={onToggleComplete} aria-label="Marcar como lido" />
-                    <label htmlFor={`day-${day.day}`} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-body">
-                        Marcar como lido
-                    </label>
-                </div>
-            ) : <Skeleton className="h-10 w-32 rounded-lg" />}
           </div>
         </CardHeader>
         <CardContent className="h-[60vh] flex flex-col">
