@@ -150,7 +150,7 @@ export default function BibleReadingPlanPage() {
         <SidebarFooter>
             <SidebarMenu>
                 <SidebarMenuItem>
-                    <Link href="/plans" passHref>
+                    <Link href="/plans">
                         <SidebarMenuButton>
                             <Settings />
                             Gerenciar Planos
