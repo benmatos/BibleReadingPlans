@@ -42,10 +42,10 @@ export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, o
             ) : <Skeleton className="h-10 w-32 rounded-lg" />}
           </div>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4 font-body text-lg">
-            <h3 className="font-headline text-xl font-semibold">Leitura de Hoje</h3>
-            <ScrollArea className="h-[60vh] pr-4">
+        <CardContent className="h-[60vh] flex flex-col">
+          <h3 className="font-headline text-xl font-semibold mb-4">Leitura de Hoje</h3>
+          <div className="flex-grow overflow-hidden">
+            <ScrollArea className="h-full pr-4">
                 <div className="prose prose-lg max-w-none text-foreground/90 whitespace-pre-wrap">
                     {scriptureText}
                 </div>
