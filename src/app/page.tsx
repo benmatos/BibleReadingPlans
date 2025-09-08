@@ -69,6 +69,7 @@ export default function BibleReadingPlanPage() {
         });
         
         setReadingPlan(newPlan);
+
         if (newPlan.length > 0) {
             const lastReadDayNumber = getLastReadDay(selectedPlan.id);
             const dayToSelect = newPlan.find(d => d.day === lastReadDayNumber) || newPlan[0];
@@ -76,7 +77,6 @@ export default function BibleReadingPlanPage() {
         } else {
             setSelectedDay(null);
         }
-
       } else {
          setReadingPlan([]);
          setSelectedDay(null);
@@ -86,14 +86,14 @@ export default function BibleReadingPlanPage() {
       setSelectedDay(null);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedPlan, isLoaded]);
+  }, [selectedPlan, isLoaded, getLastReadDay]);
 
   // Persist the last read day
   useEffect(() => {
-    if (selectedPlan && selectedDay) {
+    if (selectedPlan?.id && selectedDay?.day) {
         setLastReadDay(selectedPlan.id, selectedDay.day);
     }
-  }, [selectedPlan, selectedDay, setLastReadDay]);
+  }, [selectedPlan?.id, selectedDay?.day, setLastReadDay]);
 
 
   useEffect(() => {
