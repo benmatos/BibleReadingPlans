@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useMemo, useEffect } from 'react';
@@ -25,13 +26,18 @@ import Link from 'next/link';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 
 export default function BibleReadingPlanPage() {
+  const [isClientLoaded, setIsClientLoaded] = useState(false);
   const { plans, isLoaded: plansLoaded } = usePlans();
   const [selectedPlan, setSelectedPlan] = useState<ReadingPlan | null>(null);
   const [selectedDay, setSelectedDay] = useState(() => defaultReadingPlan[0]);
   const { completedDays, toggleDayCompletion, isDayCompleted, isLoaded: progressLoaded } = useProgress(selectedPlan?.id);
 
   const readingPlan = defaultReadingPlan; // For now, we only have one reading plan data.
-  const isLoaded = plansLoaded && progressLoaded;
+  const isLoaded = plansLoaded && progressLoaded && isClientLoaded;
+
+  useEffect(() => {
+    setIsClientLoaded(true);
+  }, []);
 
   useEffect(() => {
     if (selectedPlan && plans.length > 0 && plansLoaded) {
