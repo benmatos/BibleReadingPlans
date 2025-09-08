@@ -40,12 +40,6 @@ export default function BibleReadingPlanPage() {
   const { getLastReadDay, setLastReadDay, isLoaded: lastReadLoaded } = useLastRead();
 
   const isLoaded = plansLoaded && progressLoaded && lastReadLoaded;
-  
-  useEffect(() => {
-    if (isLoaded && plans.length > 0 && !selectedPlan) {
-      setSelectedPlan(plans[0]);
-    }
-  }, [isLoaded, plans, selectedPlan]);
 
   const generatePlan = useCallback((plan: ReadingPlan | null): Day[] => {
     if (!plan) return [];
@@ -73,51 +67,53 @@ export default function BibleReadingPlanPage() {
     return newPlan;
   }, []);
 
-
+  // Effect to initialize the plan and select the last read day
   useEffect(() => {
-    if (selectedPlan && isLoaded) {
-      const newPlan = generatePlan(selectedPlan);
-      setReadingPlan(newPlan);
+    if (!isLoaded) return;
 
-      if (newPlan.length > 0) {
-        const lastReadDayNumber = getLastReadDay(selectedPlan.id) ?? 1;
-        const dayToSelect = newPlan.find(d => d.day === lastReadDayNumber) || newPlan[0];
-        setSelectedDay(dayToSelect);
-      } else {
-        setSelectedDay(null);
-      }
-    } else if (!selectedPlan) {
+    let currentPlan = selectedPlan;
+
+    // If no plan is selected, or the selected plan is no longer in the list, select the first plan
+    if ((!currentPlan && plans.length > 0) || (currentPlan && !plans.some(p => p.id === currentPlan.id))) {
+      currentPlan = plans[0] || null;
+      setSelectedPlan(currentPlan);
+    }
+    
+    if (currentPlan) {
+        const newPlan = generatePlan(currentPlan);
+        setReadingPlan(newPlan);
+        
+        if (newPlan.length > 0) {
+            const lastReadDayNumber = getLastReadDay(currentPlan.id) ?? 1;
+            const dayToSelect = newPlan.find(d => d.day === lastReadDayNumber) || newPlan[0];
+            if (selectedDay?.day !== dayToSelect?.day || selectedDay?.reading !== dayToSelect?.reading) {
+                setSelectedDay(dayToSelect);
+            }
+        } else {
+            setSelectedDay(null);
+        }
+    } else {
       setReadingPlan([]);
       setSelectedDay(null);
     }
-  }, [selectedPlan, isLoaded, getLastReadDay, generatePlan]);
+  }, [selectedPlan, plans, isLoaded, getLastReadDay, generatePlan, selectedDay]);
 
-  // Persist the last read day
+  // Persist the last read day when selectedDay changes
   useEffect(() => {
     if (selectedPlan?.id && selectedDay?.day) {
         setLastReadDay(selectedPlan.id, selectedDay.day);
     }
-  }, [selectedPlan, selectedDay, setLastReadDay]);
-
-
-  useEffect(() => {
-    if (selectedPlan && plans.length > 0 && plansLoaded) {
-      const currentPlan = plans.find(p => p.id === selectedPlan.id);
-      if (!currentPlan) {
-        setSelectedPlan(plans[0] || null);
-      }
-    }
-  }, [plans, selectedPlan, plansLoaded]);
+  }, [selectedDay, selectedPlan?.id, setLastReadDay]);
   
-  // Effect to scroll the active day into view
+  // Effect to scroll the active plan into view
   useEffect(() => {
-    if (selectedPlan) {
+    if (selectedPlan?.id) {
         const element = document.querySelector(`[data-plan-id='${selectedPlan.id}']`);
         if (element) {
           element.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     }
-  }, [selectedPlan]);
+  }, [selectedPlan?.id]);
   
   const handleSelectDay = (day: Day) => {
     setSelectedDay(day);
