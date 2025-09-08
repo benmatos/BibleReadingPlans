@@ -4,12 +4,12 @@
 import { useState, useEffect } from 'react';
 import type { readingPlan } from '@/data/reading-plan';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, BookOpen } from "lucide-react";
 import { Skeleton } from './ui/skeleton';
 import { ScrollArea } from './ui/scroll-area';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
+import { useSettings } from '@/hooks/use-settings';
 
 interface ReadingDayViewProps {
   day: typeof readingPlan[0];
@@ -43,6 +43,7 @@ export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, o
   const [verses, setVerses] = useState<Verse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { fontSize } = useSettings();
 
   useEffect(() => {
     if (!day?.reading) return;
@@ -107,7 +108,7 @@ export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, o
               </div>
             ) : (
               <ScrollArea className="h-full pr-4">
-                  <div className="prose prose-lg max-w-none text-foreground/90">
+                  <div className={`prose max-w-none text-foreground/90 font-size-${fontSize}`}>
                       {verses.map(verse => (
                           <p key={verse.verse}>
                             <sup>{verse.verse}</sup> {verse.text}
