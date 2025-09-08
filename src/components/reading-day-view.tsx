@@ -95,7 +95,6 @@ export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, o
           </div>
         </CardHeader>
         <CardContent className="h-[60vh] flex flex-col">
-          <h3 className="font-headline text-xl font-semibold mb-4">Leitura de Hoje</h3>
            <div className="flex-grow overflow-hidden relative">
             {isLoading ? (
               <div className="space-y-4">
