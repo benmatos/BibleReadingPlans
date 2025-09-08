@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Skeleton } from './ui/skeleton';
+import { ScrollArea } from './ui/scroll-area';
 
 interface ReadingDayViewProps {
   day: typeof readingPlan[0];
@@ -43,9 +44,11 @@ export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, o
         <CardContent>
           <div className="space-y-4 font-body text-lg">
             <h3 className="font-headline text-xl font-semibold">Leitura de Hoje</h3>
-            <div className="prose prose-lg max-w-none text-foreground/90 whitespace-pre-wrap">
-              {scriptureText}
-            </div>
+            <ScrollArea className="h-[60vh] pr-4">
+                <div className="prose prose-lg max-w-none text-foreground/90 whitespace-pre-wrap">
+                    {scriptureText}
+                </div>
+            </ScrollArea>
           </div>
         </CardContent>
       </Card>
