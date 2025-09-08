@@ -22,6 +22,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
 
 export default function BibleReadingPlanPage() {
   const { plans, isLoaded: plansLoaded } = usePlans();
@@ -30,22 +31,27 @@ export default function BibleReadingPlanPage() {
   const { completedDays, toggleDayCompletion, isDayCompleted, isLoaded: progressLoaded } = useProgress(selectedPlan?.id);
 
   const readingPlan = defaultReadingPlan; // For now, we only have one reading plan data.
+  const isLoaded = plansLoaded && progressLoaded;
 
   useEffect(() => {
-    if (plansLoaded && plans.length > 0 && !selectedPlan) {
-      // Don't auto-select a plan
-    }
-  }, [plans, plansLoaded, selectedPlan]);
-
-  useEffect(() => {
-    if (selectedPlan && plans.length > 0) {
+    if (selectedPlan && plans.length > 0 && plansLoaded) {
       const currentPlan = plans.find(p => p.id === selectedPlan.id);
       if (!currentPlan) {
         setSelectedPlan(null);
         setSelectedDay(readingPlan[0]);
       }
     }
-  }, [plans, selectedPlan, readingPlan]);
+  }, [plans, selectedPlan, readingPlan, plansLoaded]);
+  
+  // Effect to scroll the active day into view
+  useEffect(() => {
+    if (selectedPlan && isLoaded) {
+        const element = document.querySelector(`[data-plan-id='${selectedPlan.id}']`);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+  }, [selectedPlan, isLoaded]);
 
   const handleSelectDay = (day: typeof readingPlan[0]) => {
     setSelectedDay(day);
@@ -68,17 +74,6 @@ export default function BibleReadingPlanPage() {
     return Math.round((completedCount / readingPlan.length) * 100);
   }, [completedCount, readingPlan.length]);
   
-  // Effect to scroll the active day into view
-  useEffect(() => {
-    if (selectedPlan) {
-        const element = document.querySelector(`[data-plan-id='${selectedPlan.id}']`);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-    }
-  }, [selectedPlan]);
-  
-  const isLoaded = plansLoaded && progressLoaded;
 
   return (
     <SidebarProvider>
@@ -105,7 +100,7 @@ export default function BibleReadingPlanPage() {
                     ) : (
                         <>
                             <Skeleton className="h-2 w-full" />
-                            <Skeleton className="h-3 w-3/4 mx-auto" />
+                            <Skeleton className="h-3 w-3/4 mx-auto mt-1" />
                         </>
                     )}
                 </div>
@@ -160,7 +155,31 @@ export default function BibleReadingPlanPage() {
             </div>
         </header>
         <main className="p-4 md:p-6 lg:p-8">
-          {selectedPlan ? (
+          {!isLoaded ? (
+              <div className="max-w-4xl mx-auto">
+                <Card>
+                  <CardHeader>
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                       <div>
+                          <Skeleton className="h-8 w-24 mb-2" />
+                          <Skeleton className="h-5 w-32" />
+                       </div>
+                       <Skeleton className="h-10 w-32 rounded-lg" />
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                     <div className="space-y-4">
+                        <Skeleton className="h-6 w-40" />
+                        <div className="space-y-2">
+                           <Skeleton className="h-4 w-full" />
+                           <Skeleton className="h-4 w-full" />
+                           <Skeleton className="h-4 w-5/6" />
+                        </div>
+                     </div>
+                  </CardContent>
+                </Card>
+              </div>
+          ) : selectedPlan ? (
             <ReadingDayView 
                 day={selectedDay}
                 isCompleted={isDayCompleted(selectedDay.day)}
