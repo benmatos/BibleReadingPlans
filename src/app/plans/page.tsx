@@ -14,6 +14,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { bibleBooks } from '@/data/reading-plan';
 import { useState } from 'react';
 import { Home, Trash2, Edit, PlusCircle, ArrowLeft } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -91,25 +99,41 @@ export default function ManagePlansPage() {
                     <Label htmlFor="startBook" className="text-right">
                       Livro Inicial
                     </Label>
-                    <Input
-                      id="startBook"
-                      value={currentPlan?.startBook || ''}
-                      onChange={(e) => setCurrentPlan({ ...currentPlan, startBook: e.target.value })}
-                      className="col-span-3"
-                      placeholder="Ex: Gênesis"
-                    />
+                    <Select
+                      value={currentPlan?.startBook}
+                      onValueChange={(value) => setCurrentPlan({ ...currentPlan, startBook: value })}
+                    >
+                      <SelectTrigger className="col-span-3">
+                        <SelectValue placeholder="Selecione o livro inicial" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {bibleBooks.map((book) => (
+                          <SelectItem key={book} value={book}>
+                            {book}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="endBook" className="text-right">
                       Livro Final
                     </Label>
-                    <Input
-                      id="endBook"
-                      value={currentPlan?.endBook || ''}
-                      onChange={(e) => setCurrentPlan({ ...currentPlan, endBook: e.target.value })}
-                      className="col-span-3"
-                       placeholder="Ex: Apocalipse"
-                    />
+                     <Select
+                        value={currentPlan?.endBook}
+                        onValueChange={(value) => setCurrentPlan({ ...currentPlan, endBook: value })}
+                      >
+                      <SelectTrigger className="col-span-3">
+                        <SelectValue placeholder="Selecione o livro final" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {bibleBooks.map((book) => (
+                          <SelectItem key={book} value={book}>
+                            {book}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
                 <DialogFooter>
