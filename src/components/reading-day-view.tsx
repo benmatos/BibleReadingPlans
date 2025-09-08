@@ -135,4 +135,3 @@ export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, o
     </div>
   );
 }
-
