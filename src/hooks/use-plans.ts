@@ -37,27 +37,29 @@ export function usePlans() {
     }
   }, []);
 
-  useEffect(() => {
-    if (isLoaded) {
-      try {
-        localStorage.setItem(PLANS_KEY, JSON.stringify(plans));
-      } catch (error) {
-        console.error("Failed to save plans to localStorage", error);
-      }
+  const savePlans = (newPlans: ReadingPlan[]) => {
+    try {
+      localStorage.setItem(PLANS_KEY, JSON.stringify(newPlans));
+      setPlans(newPlans);
+    } catch (error) {
+      console.error("Failed to save plans to localStorage", error);
     }
-  }, [plans, isLoaded]);
+  };
 
   const addPlan = useCallback((planData: Omit<ReadingPlan, 'id'>) => {
-    setPlans(prev => [...prev, { ...planData, id: uuidv4() }]);
-  }, []);
+    const newPlans = [...plans, { ...planData, id: uuidv4() }];
+    savePlans(newPlans);
+  }, [plans]);
 
   const updatePlan = useCallback((updatedPlan: ReadingPlan) => {
-    setPlans(prev => prev.map(p => p.id === updatedPlan.id ? updatedPlan : p));
-  }, []);
+    const newPlans = plans.map(p => p.id === updatedPlan.id ? updatedPlan : p);
+    savePlans(newPlans);
+  }, [plans]);
   
   const deletePlan = useCallback((planId: string) => {
-    setPlans(prev => prev.filter(p => p.id !== planId));
-  }, []);
+    const newPlans = plans.filter(p => p.id !== planId);
+    savePlans(newPlans);
+  }, [plans]);
 
 
   return { plans, addPlan, updatePlan, deletePlan, isLoaded };

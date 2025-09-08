@@ -10,7 +10,6 @@ export function useProgress(planId?: string | null) {
   const PROGRESS_KEY = planId ? `${PROGRESS_KEY_PREFIX}-${planId}` : null;
 
   useEffect(() => {
-    // Reset state when planId changes
     setCompletedDays(new Set());
     setIsLoaded(false);
 
@@ -21,11 +20,7 @@ export function useProgress(planId?: string | null) {
           const parsed = JSON.parse(savedProgress);
           if (Array.isArray(parsed)) {
               setCompletedDays(new Set(parsed));
-          } else {
-              setCompletedDays(new Set());
           }
-        } else {
-            setCompletedDays(new Set());
         }
       } catch (error) {
         console.error("Failed to load progress from localStorage", error);
@@ -34,31 +29,30 @@ export function useProgress(planId?: string | null) {
         setIsLoaded(true);
       }
     } else {
-      setIsLoaded(true); // Mark as loaded if there's no planId
+      setIsLoaded(true);
     }
   }, [PROGRESS_KEY]);
 
-  useEffect(() => {
-    if (isLoaded && PROGRESS_KEY) {
-      try {
-        localStorage.setItem(PROGRESS_KEY, JSON.stringify(Array.from(completedDays)));
-      } catch (error) {
-        console.error("Failed to save progress to localStorage", error);
-      }
+  const saveProgress = (newProgress: Set<number>) => {
+    if (PROGRESS_KEY) {
+        try {
+            localStorage.setItem(PROGRESS_KEY, JSON.stringify(Array.from(newProgress)));
+            setCompletedDays(newProgress);
+        } catch (error) {
+            console.error("Failed to save progress to localStorage", error);
+        }
     }
-  }, [completedDays, isLoaded, PROGRESS_KEY]);
+  }
 
   const toggleDayCompletion = useCallback((day: number) => {
-    setCompletedDays(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(day)) {
-        newSet.delete(day);
-      } else {
-        newSet.add(day);
-      }
-      return newSet;
-    });
-  }, []);
+    const newSet = new Set(completedDays);
+    if (newSet.has(day)) {
+      newSet.delete(day);
+    } else {
+      newSet.add(day);
+    }
+    saveProgress(newSet);
+  }, [completedDays, PROGRESS_KEY]);
 
   const isDayCompleted = useCallback((day: number) => {
     return completedDays.has(day);
