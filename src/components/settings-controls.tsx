@@ -2,7 +2,7 @@
 "use client";
 
 import { useSettings } from "@/hooks/use-settings";
-import { Moon, Sun, Minus, Plus } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "./ui/separator";
 
 export function SettingsControls() {
-  const { theme, setTheme, increaseFontSize, decreaseFontSize } = useSettings();
+  const { setTheme } = useSettings();
 
   return (
     <div className="p-2 space-y-2">
@@ -41,19 +41,6 @@ export function SettingsControls() {
                 </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
-        </div>
-        <div className="flex items-center justify-between">
-            <Label className="text-sm text-sidebar-foreground">Fonte</Label>
-            <div className="flex items-center gap-1">
-                <Button variant="ghost" size="icon" onClick={decreaseFontSize} className="text-sidebar-foreground h-8 w-8 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
-                    <Minus className="h-4 w-4" />
-                    <span className="sr-only">Diminuir fonte</span>
-                </Button>
-                <Button variant="ghost" size="icon" onClick={increaseFontSize} className="text-sidebar-foreground h-8 w-8 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
-                    <Plus className="h-4 w-4" />
-                    <span className="sr-only">Aumentar fonte</span>
-                </Button>
-            </div>
         </div>
     </div>
   );

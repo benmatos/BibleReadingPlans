@@ -303,7 +303,6 @@ export default function BibleReadingPlanPage() {
                 onNavigate={handleNavigateDay}
                 isFirstDay={selectedDay.day === 1}
                 isLastDay={selectedDay.day === readingPlan.length}
-                fontSize={settings.fontSize}
             />
           )}
         </main>

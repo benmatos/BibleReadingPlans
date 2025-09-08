@@ -2,6 +2,7 @@
 'use client';
 
 import { usePlans, type ReadingPlan } from '@/hooks/use-plans';
+import { useSettings } from '@/hooks/use-settings';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -22,9 +23,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider"
 import { bibleBooks } from '@/data/reading-plan';
 import { useState, useEffect } from 'react';
-import { Trash2, Edit, PlusCircle, ArrowLeft, BookOpen } from 'lucide-react';
+import { Trash2, Edit, PlusCircle, ArrowLeft, BookOpen, CaseSensitive } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 
@@ -33,6 +35,10 @@ export default function ManagePlansPage() {
   const { plans, addPlan, updatePlan, deletePlan, isLoaded } = usePlans();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentPlan, setCurrentPlan] = useState<Partial<ReadingPlan> | null>(null);
+  const { settings, setFontSize } = useSettings();
+
+  const fontSizes = ["sm", "base", "lg", "xl"];
+  const fontSizeIndex = fontSizes.indexOf(settings.fontSize);
 
   useEffect(() => {
     setIsClient(true);
@@ -94,12 +100,37 @@ export default function ManagePlansPage() {
               <span className="sr-only">Voltar</span>
           </Link>
         </Button>
-        <h1 className="font-headline text-2xl font-bold">Gerenciar Planos de Leitura</h1>
+        <h1 className="font-headline text-2xl font-bold">Gerenciar Planos e Opções</h1>
       </header>
 
       <main className="p-4 md:p-6 lg:p-8">
         <div className="max-w-4xl mx-auto">
-          <div className="flex justify-end mb-4">
+          <Card className="mb-8">
+              <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CaseSensitive />
+                    Tamanho da Fonte
+                  </CardTitle>
+                  <CardDescription>Ajuste o tamanho da fonte para a sua leitura. A alteração é aplicada em todo o aplicativo.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                  <Slider
+                    value={[fontSizeIndex]}
+                    onValueChange={(value) => setFontSize(fontSizes[value[0]] as any)}
+                    max={fontSizes.length - 1}
+                    step={1}
+                  />
+                  <div className="flex justify-between text-xs text-muted-foreground mt-2">
+                    <span>Pequena</span>
+                    <span>Média</span>
+                    <span>Grande</span>
+                    <span>Extra Grande</span>
+                  </div>
+              </CardContent>
+          </Card>
+          
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="font-headline text-xl font-bold">Seus Planos de Leitura</h2>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button onClick={() => openDialog()}>
