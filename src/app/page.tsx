@@ -21,12 +21,11 @@ import {
   SidebarFooter,
 } from '@/components/ui/sidebar';
 import { ReadingDayView } from '@/components/reading-day-view';
-import { Settings, BookOpen, Minus, Plus } from 'lucide-react';
+import { Settings, BookOpen } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 
 interface Day {
   day: number;
@@ -89,8 +88,6 @@ export default function BibleReadingPlanPage() {
   const [selectedDay, setSelectedDay] = useState<Day | null>(null);
   const { isLoaded: progressLoaded } = useProgress(selectedPlan?.id);
   const { getLastReadDay, setLastReadDay, isLoaded: lastReadLoaded } = useLastRead();
-  const { increaseFontSize, decreaseFontSize, settings } = useSettings();
-  const fontSizes = ["sm", "base", "lg", "xl"];
 
   useEffect(() => {
     setIsClient(true);
@@ -248,30 +245,6 @@ export default function BibleReadingPlanPage() {
             <SidebarTrigger className="md:hidden"/>
             <div className="flex-1 flex justify-center items-center gap-4">
                 <h1 className="font-headline text-xl md:text-2xl font-bold text-center truncate">{selectedPlan?.name || 'Selecione um Plano'}</h1>
-                 {selectedPlan && (
-                    <div className="flex items-center gap-1">
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8"
-                            onClick={decreaseFontSize}
-                            disabled={settings.fontSize === fontSizes[0]}
-                        >
-                            <Minus className="h-4 w-4" />
-                            <span className="sr-only">Diminuir fonte</span>
-                        </Button>
-                        <Button
-                            variant="outline"
-                            size="icon"
-                            className="h-8 w-8"
-                            onClick={increaseFontSize}
-                            disabled={settings.fontSize === fontSizes[fontSizes.length - 1]}
-                        >
-                            <Plus className="h-4 w-4" />
-                             <span className="sr-only">Aumentar fonte</span>
-                        </Button>
-                    </div>
-                )}
             </div>
             <div className="md:hidden w-8"/> {/* Spacer for mobile to balance the trigger */}
         </header>

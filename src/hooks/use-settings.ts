@@ -6,19 +6,14 @@ import { useState, useEffect, useCallback } from "react";
 const SETTINGS_KEY = "bible-reading-settings";
 
 export type Theme = "light" | "dark" | "system";
-export type FontSize = "sm" | "base" | "lg" | "xl";
-
-const fontSizes: FontSize[] = ["sm", "base", "lg", "xl"];
 
 interface Settings {
   theme: Theme;
-  fontSize: FontSize;
 }
 
 export function useSettings() {
   const [settings, setSettings] = useState<Settings>({
     theme: "system",
-    fontSize: "base",
   });
    const [isLoaded, setIsLoaded] = useState(false);
 
@@ -55,25 +50,6 @@ export function useSettings() {
     saveSettings({ theme });
   }, [saveSettings]);
   
-  const setFontSize = useCallback((fontSize: FontSize) => {
-    saveSettings({ fontSize });
-  }, [saveSettings]);
-
-  const increaseFontSize = useCallback(() => {
-    const currentIndex = fontSizes.indexOf(settings.fontSize);
-    if (currentIndex < fontSizes.length - 1) {
-      setFontSize(fontSizes[currentIndex + 1]);
-    }
-  }, [settings.fontSize, setFontSize]);
-
-  const decreaseFontSize = useCallback(() => {
-    const currentIndex = fontSizes.indexOf(settings.fontSize);
-    if (currentIndex > 0) {
-      setFontSize(fontSizes[currentIndex - 1]);
-    }
-  }, [settings.fontSize, setFontSize]);
-
-
   useEffect(() => {
     if (!isLoaded) return;
     const root = window.document.documentElement;
@@ -91,9 +67,5 @@ export function useSettings() {
     settings,
     theme: settings.theme, 
     setTheme, 
-    fontSize: settings.fontSize, 
-    setFontSize,
-    increaseFontSize,
-    decreaseFontSize
   };
 }

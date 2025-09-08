@@ -28,18 +28,6 @@ export default function RootLayout({
     root.classList.add(currentTheme);
   }, [settings.theme]);
 
-  // This useEffect handles applying the font size as a CSS variable to the root element.
-   useEffect(() => {
-    const root = window.document.documentElement;
-    const fontSizesMap: Record<string, string> = {
-      sm: '14px',
-      base: '16px',
-      lg: '18px',
-      xl: '20px',
-    };
-    root.style.setProperty('--font-size-reading', fontSizesMap[settings.fontSize] || '16px');
-  }, [settings.fontSize]);
-
   return (
     <html lang="en">
       <head>
