@@ -23,7 +23,6 @@ import {
 import { ReadingDayView } from '@/components/reading-day-view';
 import { Settings, BookOpen } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
@@ -186,15 +185,6 @@ export default function BibleReadingPlanPage() {
       setSelectedDay(readingPlan[newIndex]);
     }
   };
-
-  const completedCount = useMemo(() => {
-    return completedDays.size;
-  }, [completedDays]);
-
-  const progressPercentage = useMemo(() => {
-    if (readingPlan.length === 0) return 0;
-    return Math.round((completedCount / readingPlan.length) * 100);
-  }, [completedCount, readingPlan.length]);
   
   if (!isClient) {
     return <PageSkeleton />;
@@ -215,21 +205,6 @@ export default function BibleReadingPlanPage() {
                     <p className="text-sm text-sidebar-foreground/80">Selecione um plano</p>
                 </div>
             </div>
-             {selectedPlan && (
-                <div className="mt-4 space-y-1">
-                    {isLoaded ? (
-                        <>
-                            <Progress value={progressPercentage} className="h-2" />
-                            <p className="text-xs text-sidebar-foreground/80">{completedCount} de {readingPlan.length} dias completos</p>
-                        </>
-                    ) : (
-                        <>
-                            <Skeleton className="h-2 w-full" />
-                            <Skeleton className="h-3 w-3/4 mx-auto mt-1" />
-                        </>
-                    )}
-                </div>
-            )}
         </SidebarHeader>
         <SidebarContent>
           <SidebarMenu>
