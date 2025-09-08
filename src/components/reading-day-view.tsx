@@ -103,7 +103,7 @@ export function ReadingDayView({ day, isLoaded, onNavigate, isFirstDay, isLastDa
               </div>
             ) : (
               <ScrollArea className="h-full pr-4">
-                  <div className="prose dark:prose-invert max-w-none">
+                  <div className="max-w-none">
                       {verses.map(verse => (
                           <p key={verse.verse} className="mb-4 leading-relaxed">
                             <sup className="pr-2 font-bold">{verse.verse}</sup> 
