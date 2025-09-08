@@ -5,16 +5,14 @@ import { useState, useEffect } from 'react';
 import type { readingPlan } from '@/data/reading-plan';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, BookOpen } from "lucide-react";
+import { ArrowLeft, ArrowRight, BookOpen, CheckCircle2 } from "lucide-react";
 import { Skeleton } from './ui/skeleton';
 import { ScrollArea } from './ui/scroll-area';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 
 interface ReadingDayViewProps {
   day: typeof readingPlan[0];
-  isCompleted: boolean;
   isLoaded: boolean;
-  onToggleComplete: () => void;
   onNavigate: (offset: number) => void;
   isFirstDay: boolean;
   isLastDay: boolean;
@@ -37,7 +35,7 @@ interface ApiResponse {
     translation_note: string;
 }
 
-export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, onNavigate, isFirstDay, isLastDay }: ReadingDayViewProps) {
+export function ReadingDayView({ day, isLoaded, onNavigate, isFirstDay, isLastDay }: ReadingDayViewProps) {
   const [verses, setVerses] = useState<Verse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

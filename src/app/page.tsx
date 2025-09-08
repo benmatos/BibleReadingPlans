@@ -21,11 +21,12 @@ import {
   SidebarFooter,
 } from '@/components/ui/sidebar';
 import { ReadingDayView } from '@/components/reading-day-view';
-import { Settings, BookOpen } from 'lucide-react';
+import { Settings, BookOpen, Minus, Plus } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 interface Day {
   day: number;
@@ -86,9 +87,10 @@ export default function BibleReadingPlanPage() {
   const [selectedPlan, setSelectedPlan] = useState<ReadingPlan | null>(null);
   const [readingPlan, setReadingPlan] = useState<Day[]>([]);
   const [selectedDay, setSelectedDay] = useState<Day | null>(null);
-  const { completedDays, toggleDayCompletion, isDayCompleted, isLoaded: progressLoaded } = useProgress(selectedPlan?.id);
+  const { isLoaded: progressLoaded } = useProgress(selectedPlan?.id);
   const { getLastReadDay, setLastReadDay, isLoaded: lastReadLoaded } = useLastRead();
-  const { settings } = useSettings();
+  const { increaseFontSize, decreaseFontSize, settings } = useSettings();
+  const fontSizes = ["sm", "base", "lg", "xl"];
 
   useEffect(() => {
     setIsClient(true);
@@ -173,10 +175,6 @@ export default function BibleReadingPlanPage() {
     }
   }, [selectedPlan?.id]);
   
-  const handleSelectDay = (day: Day) => {
-    setSelectedDay(day);
-  };
-  
   const handleNavigateDay = (offset: number) => {
     if (!selectedDay) return;
     const currentIndex = readingPlan.findIndex(d => d.day === selectedDay.day);
@@ -248,12 +246,34 @@ export default function BibleReadingPlanPage() {
       <SidebarInset>
         <header className="flex items-center justify-between md:justify-center p-4 border-b relative h-16">
             <SidebarTrigger className="md:hidden"/>
-            <div className="hidden md:block">
-                <h1 className="font-headline text-2xl font-bold text-center truncate">{selectedPlan?.name || 'Selecione um Plano'}</h1>
+            <div className="flex-1 flex justify-center items-center gap-4">
+                <h1 className="font-headline text-xl md:text-2xl font-bold text-center truncate">{selectedPlan?.name || 'Selecione um Plano'}</h1>
+                 {selectedPlan && (
+                    <div className="flex items-center gap-1">
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={decreaseFontSize}
+                            disabled={settings.fontSize === fontSizes[0]}
+                        >
+                            <Minus className="h-4 w-4" />
+                            <span className="sr-only">Diminuir fonte</span>
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={increaseFontSize}
+                            disabled={settings.fontSize === fontSizes[fontSizes.length - 1]}
+                        >
+                            <Plus className="h-4 w-4" />
+                             <span className="sr-only">Aumentar fonte</span>
+                        </Button>
+                    </div>
+                )}
             </div>
-             <div className="md:hidden flex-1 text-center pr-8">
-                 <h1 className="font-headline text-xl font-bold truncate">{selectedPlan?.name || 'Selecione um Plano'}</h1>
-            </div>
+            <div className="md:hidden w-8"/> {/* Spacer for mobile to balance the trigger */}
         </header>
         <main className="p-4 md:p-6 lg:p-8">
           {!selectedPlan ? (
@@ -272,9 +292,7 @@ export default function BibleReadingPlanPage() {
           ) : (
             <ReadingDayView 
                 day={selectedDay}
-                isCompleted={isDayCompleted(selectedDay.day)}
                 isLoaded={isLoaded}
-                onToggleComplete={() => toggleDayCompletion(selectedDay.day)}
                 onNavigate={handleNavigateDay}
                 isFirstDay={selectedDay.day === 1}
                 isLastDay={selectedDay.day === readingPlan.length}
