@@ -51,13 +51,13 @@ export default function BibleReadingPlanPage() {
   
   // Effect to scroll the active day into view
   useEffect(() => {
-    if (selectedPlan) {
+    if (selectedPlan && isLoaded) {
         const element = document.querySelector(`[data-plan-id='${selectedPlan.id}']`);
         if (element) {
           element.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     }
-  }, [selectedPlan]);
+  }, [selectedPlan, isLoaded]);
 
   const handleSelectDay = (day: typeof readingPlan[0]) => {
     setSelectedDay(day);
@@ -80,6 +80,16 @@ export default function BibleReadingPlanPage() {
     return Math.round((completedCount / readingPlan.length) * 100);
   }, [completedCount, readingPlan.length]);
   
+  if (!isClientLoaded) {
+    return (
+        <div className="flex h-screen w-screen items-center justify-center">
+            <div className="flex flex-col items-center gap-4">
+                <BookOpen className="h-12 w-12 text-primary" />
+                <p className="text-muted-foreground">Carregando seu plano de leitura...</p>
+            </div>
+        </div>
+    );
+  }
 
   return (
     <SidebarProvider>
