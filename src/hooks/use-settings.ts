@@ -88,6 +88,7 @@ export function useSettings() {
   }, [settings.theme, isLoaded]);
 
   return { 
+    settings,
     theme: settings.theme, 
     setTheme, 
     fontSize: settings.fontSize, 

@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "./ui/separator";
 
 export function SettingsControls() {
-  const { theme, setTheme, fontSize, increaseFontSize, decreaseFontSize } = useSettings();
+  const { theme, setTheme, increaseFontSize, decreaseFontSize } = useSettings();
 
   return (
     <div className="p-2 space-y-2">
@@ -58,5 +58,3 @@ export function SettingsControls() {
     </div>
   );
 }
-
-    

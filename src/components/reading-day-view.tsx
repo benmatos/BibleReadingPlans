@@ -9,8 +9,6 @@ import { ArrowLeft, ArrowRight, BookOpen } from "lucide-react";
 import { Skeleton } from './ui/skeleton';
 import { ScrollArea } from './ui/scroll-area';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
-import { useSettings } from '@/hooks/use-settings';
-import { cn } from '@/lib/utils';
 
 interface ReadingDayViewProps {
   day: typeof readingPlan[0];
@@ -43,7 +41,6 @@ export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, o
   const [verses, setVerses] = useState<Verse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { fontSize } = useSettings();
 
   useEffect(() => {
     if (!day?.reading) return;

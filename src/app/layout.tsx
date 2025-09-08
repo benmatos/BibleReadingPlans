@@ -1,7 +1,6 @@
 
 "use client";
 
-import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { useSettings } from '@/hooks/use-settings';
@@ -24,12 +23,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { theme, fontSize } = useSettings();
+  const { settings } = useSettings();
 
   useEffect(() => {
     const root = window.document.documentElement;
-    root.style.setProperty('--font-size-reading', fontSizesMap[fontSize] || '16px');
-  }, [fontSize]);
+    root.style.setProperty('--font-size-reading', fontSizesMap[settings.fontSize] || '16px');
+  }, [settings.fontSize]);
 
   return (
     <html lang="en">
