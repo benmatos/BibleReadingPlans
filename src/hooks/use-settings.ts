@@ -72,8 +72,7 @@ export function useSettings() {
 
   useEffect(() => {
     const root = window.document.documentElement;
-    const body = window.document.body;
-
+    
     // Handle Theme
     const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
     const currentTheme = settings.theme === "system" ? systemTheme : settings.theme;
@@ -81,11 +80,7 @@ export function useSettings() {
     root.classList.remove("light", "dark");
     root.classList.add(currentTheme);
 
-    // Handle Font Size
-    body.classList.remove("font-size-sm", "font-size-base", "font-size-lg", "font-size-xl");
-    body.classList.add(`font-size-${settings.fontSize}`);
-
-  }, [settings]);
+  }, [settings.theme]);
 
   return { 
     theme: settings.theme, 
@@ -96,5 +91,3 @@ export function useSettings() {
     decreaseFontSize
   };
 }
-
-    

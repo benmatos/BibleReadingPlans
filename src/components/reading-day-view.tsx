@@ -11,7 +11,6 @@ import { ScrollArea } from './ui/scroll-area';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import { useSettings } from '@/hooks/use-settings';
 import { cn } from '@/lib/utils';
-import { Prose } from './ui/prose';
 
 interface ReadingDayViewProps {
   day: typeof readingPlan[0];
@@ -39,6 +38,13 @@ interface ApiResponse {
     translation_name: string;
     translation_note: string;
 }
+
+const fontSizesMap: Record<string, string> = {
+  sm: '14px',
+  base: '16px',
+  lg: '18px',
+  xl: '20px',
+};
 
 
 export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, onNavigate, isFirstDay, isLastDay }: ReadingDayViewProps) {
@@ -109,15 +115,15 @@ export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, o
                 </Alert>
               </div>
             ) : (
-              <ScrollArea className={cn("h-full pr-4", `text-${fontSize}`)}>
-                  <Prose>
+              <ScrollArea className="h-full pr-4">
+                  <div style={{ fontSize: fontSizesMap[fontSize] || '16px' }}>
                       {verses.map(verse => (
-                          <p key={verse.verse}>
+                          <p key={verse.verse} className="mb-4 leading-relaxed">
                             <sup className="pr-2 font-bold">{verse.verse}</sup> 
                             {verse.text}
                           </p>
                       ))}
-                  </Prose>
+                  </div>
               </ScrollArea>
             )}
           </div>
