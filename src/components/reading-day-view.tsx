@@ -108,10 +108,11 @@ export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, o
               </div>
             ) : (
               <ScrollArea className="h-full pr-4">
-                  <div className={`prose max-w-none text-foreground/90`}>
+                  <div className={`max-w-none text-foreground/90 font-size-${fontSize}`}>
                       {verses.map(verse => (
-                          <p key={verse.verse}>
-                            <sup>{verse.verse}</sup> {verse.text}
+                          <p key={verse.verse} className="mb-4">
+                            <sup className="pr-2 font-bold">{verse.verse}</sup> 
+                            {verse.text}
                           </p>
                       ))}
                   </div>
@@ -132,3 +133,4 @@ export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, o
     </div>
   );
 }
+
