@@ -49,8 +49,13 @@ export default function ManagePlansPage() {
   };
   
   const openDialog = (plan?: ReadingPlan) => {
-      setCurrentPlan(plan || {});
+      setCurrentPlan(plan || { name: '', startBook: '', endBook: '' });
       setIsDialogOpen(true);
+  }
+
+  const closeDialog = () => {
+      setIsDialogOpen(false);
+      setCurrentPlan(null);
   }
 
   return (
