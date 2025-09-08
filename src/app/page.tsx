@@ -5,6 +5,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { bibleBooks, bibleBookChapters } from '@/data/reading-plan';
 import { useProgress } from '@/hooks/use-progress';
 import { usePlans, type ReadingPlan } from '@/hooks/use-plans';
+import { useLastRead } from '@/hooks/use-last-read';
 import {
   SidebarProvider,
   Sidebar,
@@ -36,8 +37,9 @@ export default function BibleReadingPlanPage() {
   const [readingPlan, setReadingPlan] = useState<Day[]>([]);
   const [selectedDay, setSelectedDay] = useState<Day | null>(null);
   const { completedDays, toggleDayCompletion, isDayCompleted, isLoaded: progressLoaded } = useProgress(selectedPlan?.id);
+  const { getLastReadDay, setLastReadDay, isLoaded: lastReadLoaded } = useLastRead();
 
-  const isLoaded = plansLoaded && progressLoaded;
+  const isLoaded = plansLoaded && progressLoaded && lastReadLoaded;
   
   useEffect(() => {
     if (selectedPlan) {
@@ -62,7 +64,9 @@ export default function BibleReadingPlanPage() {
         
         setReadingPlan(newPlan);
         if (newPlan.length > 0) {
-            setSelectedDay(newPlan[0]);
+            const lastReadDayNumber = getLastReadDay(selectedPlan.id);
+            const dayToSelect = newPlan.find(d => d.day === lastReadDayNumber) || newPlan[0];
+            setSelectedDay(dayToSelect);
         } else {
             setSelectedDay(null);
         }
@@ -75,7 +79,15 @@ export default function BibleReadingPlanPage() {
       setReadingPlan([]);
       setSelectedDay(null);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPlan]);
+
+  // Persist the last read day
+  useEffect(() => {
+    if (selectedPlan && selectedDay) {
+        setLastReadDay(selectedPlan.id, selectedDay.day);
+    }
+  }, [selectedPlan, selectedDay, setLastReadDay]);
 
 
   useEffect(() => {
