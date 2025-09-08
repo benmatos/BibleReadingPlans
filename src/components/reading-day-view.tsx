@@ -5,9 +5,7 @@ import { mockScriptureTexts } from '@/data/reading-plan';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { ReadingSummarizer } from "@/components/reading-summarizer";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { Separator } from './ui/separator';
 import { Skeleton } from './ui/skeleton';
 
 interface ReadingDayViewProps {
@@ -22,7 +20,6 @@ interface ReadingDayViewProps {
 
 export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, onNavigate, isFirstDay, isLastDay }: ReadingDayViewProps) {
   const scriptureText = mockScriptureTexts[day.reading] || `[Texto do capítulo ${day.reading} não disponível]`;
-  const hasTextContent = !!mockScriptureTexts[day.reading];
 
   return (
     <div className="max-w-4xl mx-auto animate-in fade-in duration-300">
@@ -50,14 +47,6 @@ export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, o
               {scriptureText}
             </div>
           </div>
-          
-          {hasTextContent && (
-            <>
-              <Separator className="my-8" />
-              <ReadingSummarizer readings={[day.reading]} />
-            </>
-          )}
-
         </CardContent>
       </Card>
       
