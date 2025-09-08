@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from 'react';
-import { bibleBooks } from '@/data/reading-plan';
+import { bibleBooks, bibleBookChapters } from '@/data/reading-plan';
 import { useProgress } from '@/hooks/use-progress';
 import { usePlans, type ReadingPlan } from '@/hooks/use-plans';
 import {
@@ -51,12 +51,27 @@ export default function BibleReadingPlanPage() {
 
       if (startBookIndex !== -1 && endBookIndex !== -1 && startBookIndex <= endBookIndex) {
         const planBooks = bibleBooks.slice(startBookIndex, endBookIndex + 1);
-        const newPlan = planBooks.map((book, index) => ({
-          day: index + 1,
-          reading: `${book} 1` // Placeholder, in real app this would be more complex
-        }));
+        
+        let dayCounter = 1;
+        const newPlan: Day[] = [];
+
+        planBooks.forEach(book => {
+          const chapters = bibleBookChapters[book] || 1;
+          for (let chapter = 1; chapter <= chapters; chapter++) {
+            newPlan.push({
+              day: dayCounter++,
+              reading: `${book} ${chapter}`
+            });
+          }
+        });
+        
         setReadingPlan(newPlan);
-        setSelectedDay(newPlan[0]);
+        if (newPlan.length > 0) {
+            setSelectedDay(newPlan[0]);
+        } else {
+            setSelectedDay(null);
+        }
+
       } else {
          setReadingPlan([]);
          setSelectedDay(null);
