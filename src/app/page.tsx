@@ -45,13 +45,13 @@ export default function BibleReadingPlanPage() {
   
   // Effect to scroll the active day into view
   useEffect(() => {
-    if (selectedPlan && isLoaded) {
+    if (selectedPlan) {
         const element = document.querySelector(`[data-plan-id='${selectedPlan.id}']`);
         if (element) {
           element.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     }
-  }, [selectedPlan, isLoaded]);
+  }, [selectedPlan]);
 
   const handleSelectDay = (day: typeof readingPlan[0]) => {
     setSelectedDay(day);
