@@ -10,28 +10,29 @@ export function useProgress(planId?: string | null) {
   const PROGRESS_KEY = planId ? `${PROGRESS_KEY_PREFIX}-${planId}` : null;
 
   useEffect(() => {
-    setCompletedDays(new Set());
+    if (!planId) {
+      setCompletedDays(new Set());
+      setIsLoaded(true);
+      return;
+    }
+    
     setIsLoaded(false);
-
-    if (PROGRESS_KEY) {
-      try {
-        const savedProgress = localStorage.getItem(PROGRESS_KEY);
-        if (savedProgress) {
-          const parsed = JSON.parse(savedProgress);
-          if (Array.isArray(parsed)) {
-              setCompletedDays(new Set(parsed));
-          }
+    let initialProgress: Set<number> = new Set();
+    try {
+      const savedProgress = localStorage.getItem(PROGRESS_KEY!);
+      if (savedProgress) {
+        const parsed = JSON.parse(savedProgress);
+        if (Array.isArray(parsed)) {
+            initialProgress = new Set(parsed);
         }
-      } catch (error) {
-        console.error("Failed to load progress from localStorage", error);
-        setCompletedDays(new Set());
-      } finally {
-        setIsLoaded(true);
       }
-    } else {
+    } catch (error) {
+      console.error("Failed to load progress from localStorage", error);
+    } finally {
+      setCompletedDays(initialProgress);
       setIsLoaded(true);
     }
-  }, [PROGRESS_KEY]);
+  }, [planId, PROGRESS_KEY]);
 
   const saveProgress = (newProgress: Set<number>) => {
     if (PROGRESS_KEY) {
