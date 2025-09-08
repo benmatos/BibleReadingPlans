@@ -1,14 +1,15 @@
 
 "use client";
 
+import { useState, useEffect } from 'react';
 import type { readingPlan } from '@/data/reading-plan';
-import { mockScriptureTexts } from '@/data/reading-plan';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, BookOpen } from "lucide-react";
 import { Skeleton } from './ui/skeleton';
 import { ScrollArea } from './ui/scroll-area';
+import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 
 interface ReadingDayViewProps {
   day: typeof readingPlan[0];
@@ -20,8 +21,61 @@ interface ReadingDayViewProps {
   isLastDay: boolean;
 }
 
+interface Verse {
+    book_id: string;
+    book_name: string;
+    chapter: number;
+    verse: number;
+    text: string;
+}
+
+interface ApiResponse {
+    reference: string;
+    verses: Verse[];
+    text: string;
+    translation_id: string;
+    translation_name: string;
+    translation_note: string;
+}
+
+
 export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, onNavigate, isFirstDay, isLastDay }: ReadingDayViewProps) {
-  const scriptureText = mockScriptureTexts[day.reading] || `[Texto do capítulo ${day.reading} não disponível]`;
+  const [scriptureText, setScriptureText] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!day?.reading) return;
+
+    const fetchScripture = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const reference = day.reading.replace(/\s/g, '+');
+        // A API está em inglês, então precisamos traduzir alguns nomes de livros
+        const apiReference = reference
+            .replace("Cantares", "Song+of+Solomon");
+
+        const response = await fetch(`https://bible-api.com/${apiReference}?translation=almeida`);
+        if (!response.ok) {
+          throw new Error('Texto da escritura não encontrado. Por favor, verifique a referência.');
+        }
+        const data: ApiResponse = await response.json();
+        
+        // Remove os números dos versículos do texto completo
+        const cleanText = data.text.replace(/\[\d+\]/g, '').trim();
+        setScriptureText(cleanText);
+
+      } catch (e: any) {
+        setError(e.message || 'Ocorreu um erro ao buscar o texto.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchScripture();
+  }, [day]);
+
 
   return (
     <div className="max-w-4xl mx-auto animate-in fade-in duration-300">
@@ -44,12 +98,32 @@ export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, o
         </CardHeader>
         <CardContent className="h-[60vh] flex flex-col">
           <h3 className="font-headline text-xl font-semibold mb-4">Leitura de Hoje</h3>
-          <div className="flex-grow overflow-hidden">
-            <ScrollArea className="h-full pr-4">
-                <div className="prose prose-lg max-w-none text-foreground/90 whitespace-pre-wrap">
-                    {scriptureText}
-                </div>
-            </ScrollArea>
+           <div className="flex-grow overflow-hidden relative">
+            {isLoading ? (
+              <div className="space-y-4">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+                <Skeleton className="h-4 w-3/4" />
+              </div>
+            ) : error ? (
+              <div className="flex items-center justify-center h-full">
+                <Alert variant="destructive" className="max-w-md">
+                    <BookOpen className="h-4 w-4" />
+                    <AlertTitle>Erro ao Carregar</AlertTitle>
+                    <AlertDescription>
+                        {error}
+                    </AlertDescription>
+                </Alert>
+              </div>
+            ) : (
+              <ScrollArea className="h-full pr-4">
+                  <div className="prose prose-lg max-w-none text-foreground/90 whitespace-pre-wrap">
+                      {scriptureText}
+                  </div>
+              </ScrollArea>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -58,7 +132,7 @@ export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, o
         <Button onClick={() => onNavigate(-1)} disabled={isFirstDay} variant="outline" className="shadow-sm">
           <ArrowLeft className="mr-2 h-4 w-4" /> Dia Anterior
         </Button>
-        <Button onClick={() => onNavigate(1)} disabled={isLastDay} variant="outline" className="shadow-sm">
+        <Button onClick={() => onNavigate(1)} disabled={isLastDay || isLoading} variant="outline" className="shadow-sm">
           Próximo Dia <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </div>
