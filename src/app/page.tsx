@@ -42,6 +42,12 @@ export default function BibleReadingPlanPage() {
   const isLoaded = plansLoaded && progressLoaded && lastReadLoaded;
   
   useEffect(() => {
+    if (isLoaded && plans.length > 0 && !selectedPlan) {
+      setSelectedPlan(plans[0]);
+    }
+  }, [isLoaded, plans, selectedPlan]);
+
+  useEffect(() => {
     if (selectedPlan) {
       const startBookIndex = bibleBooks.indexOf(selectedPlan.startBook);
       const endBookIndex = bibleBooks.indexOf(selectedPlan.endBook);
@@ -80,7 +86,7 @@ export default function BibleReadingPlanPage() {
       setSelectedDay(null);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedPlan]);
+  }, [selectedPlan, isLoaded]);
 
   // Persist the last read day
   useEffect(() => {
@@ -94,7 +100,7 @@ export default function BibleReadingPlanPage() {
     if (selectedPlan && plans.length > 0 && plansLoaded) {
       const currentPlan = plans.find(p => p.id === selectedPlan.id);
       if (!currentPlan) {
-        setSelectedPlan(null);
+        setSelectedPlan(plans[0] || null);
       }
     }
   }, [plans, selectedPlan, plansLoaded]);
@@ -211,14 +217,7 @@ export default function BibleReadingPlanPage() {
             </div>
         </header>
         <main className="p-4 md:p-6 lg:p-8">
-          {!selectedPlan ? (
-            <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
-                <BookOpen className="w-16 h-16 mb-4" />
-                <h2 className="text-2xl font-bold font-headline">Bem-vindo!</h2>
-                <p>Selecione um plano de leitura na barra lateral para começar.</p>
-                <p className="mt-2 text-sm">Não tem um plano? <Link href="/plans" className="text-primary underline">Crie um agora!</Link></p>
-            </div>
-          ) : !isLoaded || !selectedDay ? (
+          {!isLoaded ? (
               <div className="max-w-4xl mx-auto">
                 <Card>
                   <CardHeader>
@@ -242,6 +241,19 @@ export default function BibleReadingPlanPage() {
                   </CardContent>
                 </Card>
               </div>
+          ) : !selectedPlan ? (
+            <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
+                <BookOpen className="w-16 h-16 mb-4" />
+                <h2 className="text-2xl font-bold font-headline">Bem-vindo!</h2>
+                <p>Selecione um plano de leitura na barra lateral para começar.</p>
+                <p className="mt-2 text-sm">Não tem um plano? <Link href="/plans" className="text-primary underline">Crie um agora!</Link></p>
+            </div>
+          ) : !selectedDay ? (
+            <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
+                <BookOpen className="w-16 h-16 mb-4" />
+                <h2 className="text-2xl font-bold font-headline">Carregando plano...</h2>
+                <p>Aguarde um momento enquanto preparamos seu plano de leitura.</p>
+            </div>
           ) : (
             <ReadingDayView 
                 day={selectedDay}
@@ -258,3 +270,5 @@ export default function BibleReadingPlanPage() {
     </SidebarProvider>
   );
 }
+
+    
