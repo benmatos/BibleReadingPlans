@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -89,4 +90,19 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+  
+  .font-size-sm {
+    @apply text-sm;
+  }
+  .font-size-base {
+    @apply text-base;
+  }
+  .font-size-lg {
+    @apply text-lg;
+  }
+  .font-size-xl {
+    @apply text-xl;
+  }
 }
+
+    

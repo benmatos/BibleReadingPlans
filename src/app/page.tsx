@@ -6,6 +6,7 @@ import { bibleBooks, bibleBookChapters } from '@/data/reading-plan';
 import { useProgress } from '@/hooks/use-progress';
 import { usePlans, type ReadingPlan } from '@/hooks/use-plans';
 import { useLastRead } from '@/hooks/use-last-read';
+import { SettingsControls } from '@/components/settings-controls';
 import {
   SidebarProvider,
   Sidebar,
@@ -122,21 +123,22 @@ export default function BibleReadingPlanPage() {
   useEffect(() => {
     if (!isLoaded) return;
 
+    // Determine the plan to use
     const planToUse = selectedPlan ?? (plans.length > 0 ? plans[0] : null);
 
-    if (planToUse) {
-      if (planToUse.id !== selectedPlan?.id) {
+    if (planToUse && planToUse.id !== selectedPlan?.id) {
         setSelectedPlan(planToUse);
-      }
-      
-      const newPlan = generatePlan(planToUse);
-      setReadingPlan(newPlan);
-      
-      if (newPlan.length > 0 && !selectedDay) {
-         const lastReadDayNumber = getLastReadDay(planToUse.id) ?? 1;
-         const dayToSelect = newPlan.find(d => d.day === lastReadDayNumber) || newPlan[0];
-         setSelectedDay(dayToSelect);
-      }
+    }
+    
+    if (planToUse) {
+        const newPlan = generatePlan(planToUse);
+        setReadingPlan(newPlan);
+        
+        if (newPlan.length > 0) {
+            const lastReadDayNumber = getLastReadDay(planToUse.id) ?? 1;
+            const dayToSelect = newPlan.find(d => d.day === lastReadDayNumber) || newPlan[0];
+            setSelectedDay(dayToSelect);
+        }
     } else {
         setReadingPlan([]);
         setSelectedDay(null);
@@ -149,8 +151,7 @@ export default function BibleReadingPlanPage() {
   const handleSelectPlan = (plan: ReadingPlan) => {
     if (plan.id !== selectedPlan?.id) {
         setSelectedPlan(plan);
-        setReadingPlan([]); // Reset plan
-        setSelectedDay(null); // Reset day
+        // Let the useEffect handle the plan generation and day selection
     }
   }
 
@@ -193,7 +194,7 @@ export default function BibleReadingPlanPage() {
     return Math.round((completedCount / readingPlan.length) * 100);
   }, [completedCount, readingPlan.length]);
   
-  if (!isClient || !isLoaded) {
+  if (!isClient) {
     return <PageSkeleton />;
   }
 
@@ -254,6 +255,7 @@ export default function BibleReadingPlanPage() {
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
+            <SettingsControls />
             <SidebarMenu>
                 <SidebarMenuItem>
                     <Link href="/plans">
@@ -306,5 +308,7 @@ export default function BibleReadingPlanPage() {
     </SidebarProvider>
   );
 }
+
+    
 
     
