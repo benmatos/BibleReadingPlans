@@ -9,6 +9,7 @@ import { ArrowLeft, ArrowRight, BookOpen } from "lucide-react";
 import { Skeleton } from './ui/skeleton';
 import { ScrollArea } from './ui/scroll-area';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
+import { useSettings } from '@/hooks/use-settings';
 
 interface ReadingDayViewProps {
   day: typeof readingPlan[0];
@@ -105,7 +106,7 @@ export function ReadingDayView({ day, isCompleted, isLoaded, onToggleComplete, o
               </div>
             ) : (
               <ScrollArea className="h-full pr-4">
-                  <div>
+                  <div className="prose dark:prose-invert">
                       {verses.map(verse => (
                           <p key={verse.verse} className="mb-4 leading-relaxed">
                             <sup className="pr-2 font-bold">{verse.verse}</sup> 

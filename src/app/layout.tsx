@@ -5,16 +5,17 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { useSettings } from '@/hooks/use-settings';
 import { useEffect } from 'react';
+import { cn } from '@/lib/utils';
 
 // This is a client component because we need to access user settings
 // for theme and font size and apply them to the html/body tags.
 // We can't do this in a server component.
 
 const fontSizesMap: Record<string, string> = {
-  sm: '14px',
-  base: '16px',
-  lg: '18px',
-  xl: '20px',
+  sm: 'font-size-sm',
+  base: 'font-size-base',
+  lg: 'font-size-lg',
+  xl: 'font-size-xl',
 };
 
 
@@ -24,14 +25,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const { settings } = useSettings();
-
-  useEffect(() => {
-    const root = window.document.documentElement;
-    root.style.setProperty('--font-size-reading', fontSizesMap[settings.fontSize] || '16px');
-  }, [settings.fontSize]);
+  const { fontSize } = settings;
 
   return (
-    <html lang="en">
+    <html lang="en" className={cn(fontSize && fontSizesMap[fontSize])}>
       <head>
         <title>Bible Reading Plans</title>
         <meta name="description" content="Track your Bible reading journey." />
