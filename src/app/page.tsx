@@ -181,6 +181,13 @@ export default function BibleReadingPlanPage() {
     }
   };
   
+  const handleSelectDay = (dayNumber: number) => {
+      const dayToSelect = readingPlan.find(d => d.day === dayNumber);
+      if (dayToSelect) {
+          setSelectedDay(dayToSelect);
+      }
+  };
+
   if (!isClient) {
     return <PageSkeleton />;
   }
@@ -265,8 +272,10 @@ export default function BibleReadingPlanPage() {
           ) : (
             <ReadingDayView 
                 day={selectedDay}
+                readingPlan={readingPlan}
                 isLoaded={isLoaded}
                 onNavigate={handleNavigateDay}
+                onSelectDay={handleSelectDay}
                 isFirstDay={selectedDay.day === 1}
                 isLastDay={selectedDay.day === readingPlan.length}
             />

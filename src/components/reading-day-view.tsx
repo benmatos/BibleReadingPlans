@@ -2,18 +2,25 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import type { readingPlan } from '@/data/reading-plan';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, BookOpen, CheckCircle2 } from "lucide-react";
 import { Skeleton } from './ui/skeleton';
 import { ScrollArea } from './ui/scroll-area';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+interface Day {
+  day: number;
+  reading: string;
+}
 
 interface ReadingDayViewProps {
-  day: typeof readingPlan[0];
+  day: Day;
+  readingPlan: Day[];
   isLoaded: boolean;
   onNavigate: (offset: number) => void;
+  onSelectDay: (dayNumber: number) => void;
   isFirstDay: boolean;
   isLastDay: boolean;
 }
@@ -35,7 +42,7 @@ interface ApiResponse {
     translation_note: string;
 }
 
-export function ReadingDayView({ day, isLoaded, onNavigate, isFirstDay, isLastDay }: ReadingDayViewProps) {
+export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelectDay, isFirstDay, isLastDay }: ReadingDayViewProps) {
   const [verses, setVerses] = useState<Verse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -76,8 +83,22 @@ export function ReadingDayView({ day, isLoaded, onNavigate, isFirstDay, isLastDa
       <Card className="shadow-lg">
         <CardHeader>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div>
-              <CardDescription className="font-body text-xl mt-1">{day.reading}</CardDescription>
+            <div className="w-full">
+              <Select
+                value={day.day.toString()}
+                onValueChange={(value) => onSelectDay(parseInt(value, 10))}
+              >
+                <SelectTrigger className="text-xl font-body">
+                  <SelectValue placeholder="Selecione um capítulo" />
+                </SelectTrigger>
+                <SelectContent>
+                  {readingPlan.map(planDay => (
+                    <SelectItem key={planDay.day} value={planDay.day.toString()}>
+                      Dia {planDay.day}: {planDay.reading}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </CardHeader>
@@ -128,3 +149,4 @@ export function ReadingDayView({ day, isLoaded, onNavigate, isFirstDay, isLastDa
     </div>
   );
 }
+
