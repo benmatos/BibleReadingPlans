@@ -126,7 +126,7 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
               <ScrollArea className="h-full pr-4">
                   <div className="max-w-none">
                       {verses.map(verse => (
-                          <p key={verse.verse} className="mb-4 leading-relaxed">
+                          <p key={verse.verse} className="mb-4 leading-relaxed text-lg">
                             <sup className="pr-2 font-bold">{verse.verse}</sup> 
                             {verse.text}
                           </p>
@@ -149,4 +149,3 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
     </div>
   );
 }
-
