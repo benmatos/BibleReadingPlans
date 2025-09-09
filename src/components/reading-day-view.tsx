@@ -56,25 +56,24 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [apiKey, setApiKey] = useState<string | null>(null);
+  const [apiKey] = useState<string | null>(process.env.NEXT_PUBLIC_BIBLE_API_KEY || null);
 
   useEffect(() => {
-    // This runs on the client and will have access to environment variables.
-    setApiKey(process.env.NEXT_PUBLIC_BIBLE_API_KEY || null);
-  }, []);
-
-  useEffect(() => {
-    if (!day?.reading || !apiKey) {
-        if (apiKey === '') {
-            setError('Chave da API da Bíblia não configurada. Por favor, adicione NEXT_PUBLIC_BIBLE_API_KEY ao seu ambiente.');
-            setIsLoading(false);
-        }
+    if (!day?.reading) {
         return;
     };
+    
+    if (!apiKey) {
+      setError('Chave da API da Bíblia não configurada. Por favor, adicione a variável NEXT_PUBLIC_BIBLE_API_KEY ao seu arquivo .env e reinicie o servidor.');
+      setIsLoading(false);
+      return;
+    }
 
     const fetchScripture = async () => {
       setIsLoading(true);
       setError(null);
+      setAudioUrl(null);
+      setVersesText('');
       
       const readingParts = day.reading.match(/(.+?)\s+(\d+)/);
       if (!readingParts) {
@@ -104,6 +103,10 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
         // Process Text
         if (!textResponse.ok) {
           const errorData = await textResponse.json();
+          // Provide a more specific error message for invalid API keys
+          if (textResponse.status === 401) {
+              throw new Error('Falha ao buscar texto: Chave de API inválida ou não autorizada. Verifique sua chave no arquivo .env.');
+          }
           throw new Error(`Falha ao buscar texto: ${errorData.message || textResponse.statusText}`);
         }
         const textData: TextApiResponse = await textResponse.json();
