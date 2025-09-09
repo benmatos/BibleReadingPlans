@@ -30,7 +30,7 @@ export default function RootLayout({
   }, [settings.theme]);
   
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <title>Bible Reading Plans</title>
         <meta name="description" content="Track your Bible reading journey." />
