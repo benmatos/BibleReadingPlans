@@ -1,14 +1,15 @@
 
 "use client";
 
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { useState, useEffect, useMemo } from 'react';
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, BookOpen, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, BookOpen } from "lucide-react";
 import { Skeleton } from './ui/skeleton';
 import { ScrollArea } from './ui/scroll-area';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AudioPlayer } from './audio-player';
 
 interface Day {
   day: number;
@@ -47,6 +48,8 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const fullText = useMemo(() => verses.map(v => v.text).join(' '), [verses]);
+
   useEffect(() => {
     if (!day?.reading) return;
 
@@ -55,7 +58,6 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
       setError(null);
       try {
         const reference = day.reading.replace(/\s/g, '+');
-        // A API está em inglês, então precisamos traduzir alguns nomes de livros
         const apiReference = reference
             .replace("Cantares", "Song+of+Solomon");
 
@@ -101,6 +103,7 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
               </Select>
             </div>
           </div>
+           {fullText && !isLoading && <AudioPlayer text={fullText} />}
         </CardHeader>
         <CardContent className="h-[60vh] flex flex-col">
            <div className="flex-grow overflow-hidden relative">
