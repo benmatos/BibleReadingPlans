@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, BookOpen } from "lucide-react";
@@ -10,6 +10,10 @@ import { ScrollArea } from './ui/scroll-area';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AudioPlayer } from './audio-player';
+import { bibleBookToApiId } from '@/data/bible-api-map';
+
+const BIBLE_ID_TEXT = '685d1470fe4d5c3b-01'; // Bíblia JFA Edição Contemporânea
+const BIBLE_ID_AUDIO = 'bba9f4018352646c-02'; // BBE Audio
 
 interface Day {
   day: number;
@@ -27,58 +31,108 @@ interface ReadingDayViewProps {
 }
 
 interface Verse {
-    book_id: string;
-    book_name: string;
-    chapter: number;
-    verse: number;
+    bookId: string;
+    chapterId: string;
+    id: string;
+    number: string;
     text: string;
 }
 
-interface ApiResponse {
-    reference: string;
-    verses: Verse[];
-    text: string;
-    translation_id: string;
-    translation_name: string;
-    translation_note: string;
+interface TextApiResponse {
+    data: {
+        content: string;
+        id: string;
+    }
+}
+
+interface AudioApiResponse {
+    data: {
+        path: string;
+    }[];
 }
 
 export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelectDay, isFirstDay, isLastDay }: ReadingDayViewProps) {
-  const [verses, setVerses] = useState<Verse[]>([]);
+  const [versesText, setVersesText] = useState('');
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const fullText = useMemo(() => verses.map(v => v.text).join(' '), [verses]);
+  const [apiKey, setApiKey] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!day?.reading) return;
+    // This runs on the client and will have access to environment variables.
+    setApiKey(process.env.NEXT_PUBLIC_BIBLE_API_KEY || null);
+  }, []);
+
+  useEffect(() => {
+    if (!day?.reading || !apiKey) {
+        if (apiKey === '') {
+            setError('Chave da API da Bíblia não configurada. Por favor, adicione NEXT_PUBLIC_BIBLE_API_KEY ao seu ambiente.');
+            setIsLoading(false);
+        }
+        return;
+    };
 
     const fetchScripture = async () => {
       setIsLoading(true);
       setError(null);
-      try {
-        const reference = day.reading.replace(/\s/g, '+');
-        const apiReference = reference
-            .replace("Cantares", "Song+of+Solomon");
+      
+      const readingParts = day.reading.match(/(.+?)\s+(\d+)/);
+      if (!readingParts) {
+          setError('Referência de leitura inválida.');
+          setIsLoading(false);
+          return;
+      }
+      const [, bookName, chapterNumber] = readingParts;
+      const bookId = bibleBookToApiId[bookName];
 
-        const response = await fetch(`https://bible-api.com/${apiReference}?translation=almeida`);
-        if (!response.ok) {
-          throw new Error('Texto da escritura não encontrado. Por favor, verifique a referência.');
+      if (!bookId) {
+          setError(`Livro não encontrado no mapeamento da API: ${bookName}`);
+          setIsLoading(false);
+          return;
+      }
+
+      const chapterId = `${bookId}.${chapterNumber}`;
+      
+      const headers = { 'api-key': apiKey };
+
+      try {
+        const [textResponse, audioResponse] = await Promise.all([
+          fetch(`https://api.scripture.api.bible/v1/bibles/${BIBLE_ID_TEXT}/chapters/${chapterId}?content-type=text`, { headers }),
+          fetch(`https://api.scripture.api.bible/v1/audio-bibles/${BIBLE_ID_AUDIO}/chapters/${chapterId}`, { headers })
+        ]);
+
+        // Process Text
+        if (!textResponse.ok) {
+          const errorData = await textResponse.json();
+          throw new Error(`Falha ao buscar texto: ${errorData.message || textResponse.statusText}`);
         }
-        const data: ApiResponse = await response.json();
-        
-        setVerses(data.verses);
+        const textData: TextApiResponse = await textResponse.json();
+        // The text is returned as a single HTML string, we'll use it directly.
+        // We'll replace verse markers for better readability if needed.
+        const formattedText = textData.data.content.replace(/<span class="v-num" id="v\d+">(\d+)<\/span>/g, '<sup class="pr-2 font-bold">$1</sup>');
+        setVersesText(formattedText);
+
+        // Process Audio
+        if (audioResponse.ok) {
+            const audioData: AudioApiResponse = await audioResponse.json();
+            if (audioData.data && audioData.data.length > 0) {
+                setAudioUrl(audioData.data[0].path);
+            } else {
+                setAudioUrl(null); // No audio found for this chapter
+            }
+        } else {
+            setAudioUrl(null); // Fail gracefully if audio is not found
+        }
 
       } catch (e: any) {
-        setError(e.message || 'Ocorreu um erro ao buscar o texto.');
+        setError(e.message || 'Ocorreu um erro ao buscar os dados.');
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchScripture();
-  }, [day]);
-
+  }, [day, apiKey]);
 
   return (
     <div className="max-w-4xl mx-auto animate-in fade-in duration-300">
@@ -103,7 +157,7 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
               </Select>
             </div>
           </div>
-           {fullText && !isLoading && <AudioPlayer text={fullText} />}
+           <AudioPlayer audioUrl={audioUrl} isLoading={isLoading} />
         </CardHeader>
         <CardContent className="h-[60vh] flex flex-col">
            <div className="flex-grow overflow-hidden relative">
@@ -127,14 +181,7 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
               </div>
             ) : (
               <ScrollArea className="h-full pr-4">
-                  <div className="max-w-none">
-                      {verses.map(verse => (
-                          <p key={verse.verse} className="mb-4 leading-relaxed text-xl">
-                            <sup className="pr-2 font-bold">{verse.verse}</sup> 
-                            {verse.text}
-                          </p>
-                      ))}
-                  </div>
+                  <div className="prose prose-xl max-w-none text-xl leading-relaxed" dangerouslySetInnerHTML={{ __html: versesText }} />
               </ScrollArea>
             )}
           </div>
