@@ -9,11 +9,6 @@ import { Skeleton } from './ui/skeleton';
 import { ScrollArea } from './ui/scroll-area';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AudioPlayer } from './audio-player';
-import { bibleBookToApiId } from '@/data/bible-api-map';
-
-const BIBLE_ID_TEXT = '685d1470fe4d5c3b-01'; // Bíblia JFA Edição Contemporânea
-const BIBLE_ID_AUDIO = 'bba9f4018352646c-02'; // BBE Audio
 
 interface Day {
   day: number;
@@ -31,101 +26,58 @@ interface ReadingDayViewProps {
 }
 
 interface Verse {
-    bookId: string;
-    chapterId: string;
-    id: string;
-    number: string;
+    book_name: string;
+    chapter: number;
+    verse: number;
     text: string;
 }
 
 interface TextApiResponse {
-    data: {
-        content: string;
-        id: string;
-    }
+    reference: string;
+    verses: Verse[];
+    text: string;
+    translation_id: string;
+    translation_name: string;
+    translation_note: string;
 }
 
-interface AudioApiResponse {
-    data: {
-        path: string;
-    }[];
-}
 
 export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelectDay, isFirstDay, isLastDay }: ReadingDayViewProps) {
   const [versesText, setVersesText] = useState('');
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [apiKey] = useState<string | null>(process.env.NEXT_PUBLIC_BIBLE_API_KEY || null);
 
   useEffect(() => {
     if (!day?.reading) {
         return;
     };
-    
-    if (!apiKey) {
-      setError('Chave da API da Bíblia não configurada. Por favor, adicione a variável NEXT_PUBLIC_BIBLE_API_KEY ao seu arquivo .env e reinicie o servidor.');
-      setIsLoading(false);
-      return;
-    }
 
     const fetchScripture = async () => {
       setIsLoading(true);
       setError(null);
-      setAudioUrl(null);
       setVersesText('');
       
-      const readingParts = day.reading.match(/(.+?)\s+(\d+)/);
-      if (!readingParts) {
-          setError('Referência de leitura inválida.');
-          setIsLoading(false);
-          return;
-      }
-      const [, bookName, chapterNumber] = readingParts;
-      const bookId = bibleBookToApiId[bookName];
-
-      if (!bookId) {
-          setError(`Livro não encontrado no mapeamento da API: ${bookName}`);
-          setIsLoading(false);
-          return;
-      }
-
-      const chapterId = `${bookId}.${chapterNumber}`;
-      
-      const headers = { 'api-key': apiKey };
+      const readingRef = day.reading.replace(/\s/g, '+');
 
       try {
-        const [textResponse, audioResponse] = await Promise.all([
-          fetch(`https://api.scripture.api.bible/v1/bibles/${BIBLE_ID_TEXT}/chapters/${chapterId}?content-type=text`, { headers }),
-          fetch(`https://api.scripture.api.bible/v1/audio-bibles/${BIBLE_ID_AUDIO}/chapters/${chapterId}`, { headers })
-        ]);
-
-        // Process Text
-        if (!textResponse.ok) {
-          const errorData = await textResponse.json();
-          // Provide a more specific error message for invalid API keys
-          if (textResponse.status === 401) {
-              throw new Error('Falha ao buscar texto: Chave de API inválida ou não autorizada. Verifique sua chave no arquivo .env.');
-          }
-          throw new Error(`Falha ao buscar texto: ${errorData.message || textResponse.statusText}`);
-        }
-        const textData: TextApiResponse = await textResponse.json();
-        // The text is returned as a single HTML string, we'll use it directly.
-        // We'll replace verse markers for better readability if needed.
-        const formattedText = textData.data.content.replace(/<span class="v-num" id="v\d+">(\d+)<\/span>/g, '<sup class="pr-2 font-bold">$1</sup>');
-        setVersesText(formattedText);
-
-        // Process Audio
-        if (audioResponse.ok) {
-            const audioData: AudioApiResponse = await audioResponse.json();
-            if (audioData.data && audioData.data.length > 0) {
-                setAudioUrl(audioData.data[0].path);
-            } else {
-                setAudioUrl(null); // No audio found for this chapter
+        const response = await fetch(`https://bible-api.com/${readingRef}?translation=almeida`);
+        
+        if (!response.ok) {
+            let errorMsg = `Falha ao buscar texto: ${response.statusText}`;
+            try {
+                const errorData = await response.json();
+                errorMsg = `Falha ao buscar texto: ${errorData.error || response.statusText}`;
+            } catch (e) {
+                // Ignore if response is not JSON
             }
-        } else {
-            setAudioUrl(null); // Fail gracefully if audio is not found
+          throw new Error(errorMsg);
         }
+
+        const data: TextApiResponse = await response.json();
+        
+        // Format verses with superscript numbers
+        const formattedText = data.verses.map(v => `<sup class="pr-2 font-bold">${v.verse}</sup>${v.text}`).join(' ');
+        setVersesText(formattedText);
 
       } catch (e: any) {
         setError(e.message || 'Ocorreu um erro ao buscar os dados.');
@@ -135,7 +87,7 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
     };
 
     fetchScripture();
-  }, [day, apiKey]);
+  }, [day]);
 
   return (
     <div className="max-w-4xl mx-auto animate-in fade-in duration-300">
@@ -160,7 +112,6 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
               </Select>
             </div>
           </div>
-           <AudioPlayer audioUrl={audioUrl} isLoading={isLoading} />
         </CardHeader>
         <CardContent className="h-[60vh] flex flex-col">
            <div className="flex-grow overflow-hidden relative">
@@ -184,7 +135,7 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
               </div>
             ) : (
               <ScrollArea className="h-full pr-4">
-                  <div className="prose prose-xl max-w-none text-xl leading-relaxed" dangerouslySetInnerHTML={{ __html: versesText }} />
+                  <div className="prose prose-xl max-w-none text-2xl leading-relaxed" dangerouslySetInnerHTML={{ __html: versesText }} />
               </ScrollArea>
             )}
           </div>
