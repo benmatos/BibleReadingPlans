@@ -19,7 +19,7 @@ export function AudioPlayer({ audioUrl, isLoading }: AudioPlayerProps) {
 
   return (
     <div className="mt-4">
-      <audio controls className="w-full" key={audioUrl}>
+      <audio controls={true} className="w-full" key={audioUrl}>
         <source src={audioUrl} type="audio/mpeg" />
         Seu navegador não suporta o elemento de áudio.
       </audio>
