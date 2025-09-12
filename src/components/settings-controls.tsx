@@ -15,7 +15,7 @@ import { Separator } from "./ui/separator";
 
 const BIBLE_VERSIONS = {
     'almeida': 'Almeida',
-    'nvi': 'NVI'
+    'aa': 'NVI'
 } as const;
 
 export function SettingsControls() {
@@ -60,7 +60,7 @@ export function SettingsControls() {
                 <DropdownMenuItem onClick={() => setBibleVersion("almeida")}>
                     Almeida
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setBibleVersion("nvi")}>
+                <DropdownMenuItem onClick={() => setBibleVersion("aa")}>
                     NVI
                 </DropdownMenuItem>
                 </DropdownMenuContent>

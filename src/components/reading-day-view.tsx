@@ -108,6 +108,7 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
 
   const getVersionAbbreviation = (version: string) => {
     if (version === 'almeida') return 'ACF';
+    if (version === 'aa') return 'NVI';
     return version.toUpperCase();
   }
 
