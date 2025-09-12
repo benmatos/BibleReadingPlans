@@ -122,7 +122,7 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
                 <SelectContent>
                   {readingPlan.map(planDay => (
                     <SelectItem key={planDay.day} value={planDay.day.toString()}>
-                      Dia {planDay.day}: {planDay.reading}
+                      Dia {planDay.day}: {planDay.reading} ({settings.bibleVersion.toUpperCase()})
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -171,3 +171,4 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
     </div>
   );
 }
+
