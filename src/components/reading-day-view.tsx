@@ -176,4 +176,3 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
     </div>
   );
 }
-
