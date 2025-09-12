@@ -11,6 +11,7 @@ import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AudioPlayer } from './audio-player';
 import { bibleBookOrder } from '@/data/bible-book-order';
+import { useSettings } from '@/hooks/use-settings';
 
 interface Day {
   day: number;
@@ -49,6 +50,7 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const { settings } = useSettings();
 
   useEffect(() => {
     if (!day?.reading) {
@@ -62,9 +64,10 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
       setAudioUrl(null);
       
       const readingRef = day.reading.replace(/\s/g, '+');
+      const bibleVersion = settings.bibleVersion || 'almeida';
 
       try {
-        const response = await fetch(`https://bible-api.com/${readingRef}?translation=almeida`);
+        const response = await fetch(`https://bible-api.com/${readingRef}?translation=${bibleVersion}`);
         
         if (!response.ok) {
             let errorMsg = `Falha ao buscar texto: ${response.statusText}`;
@@ -101,7 +104,7 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
     };
 
     fetchScripture();
-  }, [day]);
+  }, [day, settings.bibleVersion]);
 
   return (
     <div className="max-w-4xl mx-auto animate-in fade-in duration-300">

@@ -6,14 +6,17 @@ import { useState, useEffect, useCallback } from "react";
 const SETTINGS_KEY = "bible-reading-settings";
 
 export type Theme = "light" | "dark" | "system";
+export type BibleVersion = "almeida" | "nvi";
 
 interface Settings {
   theme: Theme;
+  bibleVersion: BibleVersion;
 }
 
 export function useSettings() {
   const [settings, setSettings] = useState<Settings>({
     theme: "system",
+    bibleVersion: "almeida",
   });
    const [isLoaded, setIsLoaded] = useState(false);
 
@@ -50,6 +53,10 @@ export function useSettings() {
     saveSettings({ theme });
   }, [saveSettings]);
   
+  const setBibleVersion = useCallback((bibleVersion: BibleVersion) => {
+    saveSettings({ bibleVersion });
+  }, [saveSettings]);
+
   useEffect(() => {
     if (!isLoaded) return;
     const root = window.document.documentElement;
@@ -65,7 +72,7 @@ export function useSettings() {
 
   return { 
     settings,
-    theme: settings.theme, 
     setTheme, 
+    setBibleVersion,
   };
 }

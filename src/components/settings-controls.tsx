@@ -2,7 +2,7 @@
 "use client";
 
 import { useSettings } from "@/hooks/use-settings";
-import { Moon, Sun } from "lucide-react";
+import { Book, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,8 +13,13 @@ import {
 import { Label } from "@/components/ui/label";
 import { Separator } from "./ui/separator";
 
+const BIBLE_VERSIONS = {
+    'almeida': 'Almeida',
+    'nvi': 'NVI'
+} as const;
+
 export function SettingsControls() {
-  const { setTheme } = useSettings();
+  const { settings, setTheme, setBibleVersion } = useSettings();
 
   return (
     <div className="p-2 space-y-2">
@@ -38,6 +43,25 @@ export function SettingsControls() {
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTheme("system")}>
                     Sistema
+                </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        </div>
+        <div className="flex items-center justify-between">
+            <Label className="text-sm text-sidebar-foreground">Versão</Label>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="text-sidebar-foreground h-8 px-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
+                    <Book className="mr-2 h-4 w-4" />
+                    <span>{BIBLE_VERSIONS[settings.bibleVersion as keyof typeof BIBLE_VERSIONS] || 'Almeida'}</span>
+                </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => setBibleVersion("almeida")}>
+                    Almeida
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setBibleVersion("nvi")}>
+                    NVI
                 </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
