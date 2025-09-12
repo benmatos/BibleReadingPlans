@@ -39,15 +39,16 @@ export function useSettings() {
 
   const saveSettings = useCallback((newSettings: Partial<Settings>) => {
     if (!isLoaded) return;
-    try {
-      const updatedSettings = { ...settings, ...newSettings };
-      localStorage.setItem(SETTINGS_KEY, JSON.stringify(updatedSettings));
-      setSettings(updatedSettings);
-    } catch (error)
-      {
-      console.error("Failed to save settings to localStorage", error);
-    }
-  }, [settings, isLoaded]);
+    setSettings(prevSettings => {
+        const updatedSettings = { ...prevSettings, ...newSettings };
+        try {
+            localStorage.setItem(SETTINGS_KEY, JSON.stringify(updatedSettings));
+        } catch (error) {
+            console.error("Failed to save settings to localStorage", error);
+        }
+        return updatedSettings;
+    });
+  }, [isLoaded]);
 
   const setTheme = useCallback((theme: Theme) => {
     saveSettings({ theme });
