@@ -89,12 +89,7 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
         const bookNumber = bibleBookOrder[bookName];
 
         if (bookNumber) {
-            const bookNumberPadded = bookNumber.toString().padStart(2, '0');
-            const chapterPadded = chapter.toString().padStart(2, '0');
-            // This is a bit of a guess based on the URL structure. It might need adjustments.
-            // Example: A01___01_Gênesis______BR.mp3
-            const audioFileName = `A${bookNumberPadded}___${chapterPadded}_${bookName.replace(/\s/g, '_')}______BR.mp3`;
-            const url = `https://www.wordproaudio.org/bibles/app/audio/2_BR/${audioFileName}`;
+            const url = `https://www.wordproaudio.org/bibles/app/audio/2_BR/${bookNumber}/${chapter}.mp3`;
             setAudioUrl(url);
         }
 
