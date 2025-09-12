@@ -106,6 +106,11 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
     fetchScripture();
   }, [day, settings.bibleVersion]);
 
+  const getVersionAbbreviation = (version: string) => {
+    if (version === 'almeida') return 'ACF';
+    return version.toUpperCase();
+  }
+
   return (
     <div className="max-w-4xl mx-auto animate-in fade-in duration-300">
       <Card className="shadow-lg">
@@ -122,7 +127,7 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
                 <SelectContent>
                   {readingPlan.map(planDay => (
                     <SelectItem key={planDay.day} value={planDay.day.toString()}>
-                      Dia {planDay.day}: {planDay.reading} ({settings.bibleVersion.toUpperCase()})
+                      Dia {planDay.day}: {planDay.reading} ({getVersionAbbreviation(settings.bibleVersion)})
                     </SelectItem>
                   ))}
                 </SelectContent>
