@@ -9,6 +9,8 @@ import { Skeleton } from './ui/skeleton';
 import { ScrollArea } from './ui/scroll-area';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AudioPlayer } from './audio-player';
+import { bibleBookOrder } from '@/data/bible-book-order';
 
 interface Day {
   day: number;
@@ -46,6 +48,7 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
   const [versesText, setVersesText] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (!day?.reading) {
@@ -56,6 +59,7 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
       setIsLoading(true);
       setError(null);
       setVersesText('');
+      setAudioUrl(null);
       
       const readingRef = day.reading.replace(/\s/g, '+');
 
@@ -78,6 +82,21 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
         // Format verses with superscript numbers
         const formattedText = data.verses.map(v => `<sup class="pr-2 font-bold">${v.verse}</sup>${v.text}`).join(' ');
         setVersesText(formattedText);
+        
+        // Build audio URL
+        const bookName = data.verses[0].book_name;
+        const chapter = data.verses[0].chapter;
+        const bookNumber = bibleBookOrder[bookName];
+
+        if (bookNumber) {
+            const bookNumberPadded = bookNumber.toString().padStart(2, '0');
+            const chapterPadded = chapter.toString().padStart(2, '0');
+            // This is a bit of a guess based on the URL structure. It might need adjustments.
+            // Example: A01___01_Gênesis______BR.mp3
+            const audioFileName = `A${bookNumberPadded}___${chapterPadded}_${bookName.replace(/\s/g, '_')}______BR.mp3`;
+            const url = `https://www.wordproaudio.org/bibles/app/audio/2_BR/${audioFileName}`;
+            setAudioUrl(url);
+        }
 
       } catch (e: any) {
         setError(e.message || 'Ocorreu um erro ao buscar os dados.');
@@ -110,6 +129,7 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
                   ))}
                 </SelectContent>
               </Select>
+               <AudioPlayer audioUrl={audioUrl} isLoading={isLoading} />
             </div>
           </div>
         </CardHeader>
