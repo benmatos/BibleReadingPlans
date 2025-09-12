@@ -17,17 +17,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { settings } = useSettings();
-
-  // This useEffect handles applying the theme class (light/dark) to the root element.
-  useEffect(() => {
-    const root = window.document.documentElement;
-    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-    const currentTheme = settings.theme === "system" ? systemTheme : settings.theme;
-    
-    root.classList.remove("light", "dark");
-    root.classList.add(currentTheme);
-  }, [settings.theme]);
+  // useSettings hook will handle applying the theme class to the root element.
+  useSettings();
   
   return (
     <html lang="en" suppressHydrationWarning>

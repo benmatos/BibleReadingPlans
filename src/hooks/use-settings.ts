@@ -13,12 +13,14 @@ interface Settings {
   bibleVersion: BibleVersion;
 }
 
+const defaultSettings: Settings = {
+  theme: "system",
+  bibleVersion: "almeida",
+};
+
 export function useSettings() {
-  const [settings, setSettings] = useState<Settings>({
-    theme: "system",
-    bibleVersion: "almeida",
-  });
-   const [isLoaded, setIsLoaded] = useState(false);
+  const [settings, setSettings] = useState<Settings>(defaultSettings);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     let savedSettings: Partial<Settings> = {};
@@ -33,12 +35,11 @@ export function useSettings() {
     } catch (error) {
       console.error("Failed to load settings from localStorage", error);
     }
-    setSettings(prev => ({...prev, ...savedSettings}));
+    setSettings((prev) => ({ ...prev, ...savedSettings }));
     setIsLoaded(true);
   }, []);
 
-  const saveSettings = useCallback((newSettings: Partial<Settings>) => {
-    if (!isLoaded) return;
+  const updateSettings = useCallback((newSettings: Partial<Settings>) => {
     setSettings(prevSettings => {
         const updatedSettings = { ...prevSettings, ...newSettings };
         try {
@@ -48,21 +49,20 @@ export function useSettings() {
         }
         return updatedSettings;
     });
-  }, [isLoaded]);
+  }, []);
 
   const setTheme = useCallback((theme: Theme) => {
-    saveSettings({ theme });
-  }, [saveSettings]);
+    updateSettings({ theme });
+  }, [updateSettings]);
   
   const setBibleVersion = useCallback((bibleVersion: BibleVersion) => {
-    saveSettings({ bibleVersion });
-  }, [saveSettings]);
+    updateSettings({ bibleVersion });
+  }, [updateSettings]);
 
   useEffect(() => {
     if (!isLoaded) return;
-    const root = window.document.documentElement;
     
-    // Handle Theme
+    const root = window.document.documentElement;
     const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
     const currentTheme = settings.theme === "system" ? systemTheme : settings.theme;
     
