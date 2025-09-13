@@ -88,13 +88,15 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
       <Card className="shadow-lg">
         <CardHeader>
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div className="w-full">
+            <div className="w-full space-y-4">
               <Select
                 value={day.day.toString()}
                 onValueChange={(value) => onSelectDay(parseInt(value, 10))}
               >
                 <SelectTrigger className="text-xl font-body">
-                  <SelectValue placeholder="Selecione um capítulo" />
+                  <SelectValue>
+                    Dia {day.day}: {day.reading} ({getVersionAbbreviation(settings.bibleVersion)})
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {readingPlan.map(planDay => (

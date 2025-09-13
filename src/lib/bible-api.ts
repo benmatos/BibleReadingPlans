@@ -3,33 +3,20 @@
 
 import { bibleBookOrder } from "@/data/bible-book-order";
 
-const API_BASE_URL = 'https://pesquisarnabiblia.com.br/api-projeto/api/get_verses.php';
-
 interface Verse {
-    number: number;
+    verse_id: number;
+    book_name: string;
+    chapter: number;
+    verse_number: number;
     text: string;
 }
 
 interface ApiResponse {
-    status: string;
-    msg: string;
-    book: {
-        book_id: string;
-        name: string;
-        version: string;
-    };
-    chapter: {
-        number: number;
-        verses: Verse[];
-    }
+    verses: Verse[];
 }
 
 interface ChapterResponse {
-    chapter: {
-        number: number;
-        verses: number;
-    };
-    verses: Verse[];
+    verses: { number: number; text: string }[];
 }
 
 const versionMap: Record<string, number> = {
@@ -52,10 +39,17 @@ export async function fetchChapterText(version: string, bookName: string, chapte
         chapter_id: chapter.toString(),
     });
 
-    const url = `${API_BASE_URL}?${params.toString()}`;
-
+    const url = `https://pesquisarnabiblia.com.br/api-projeto/api/get_verses.php?${params.toString()}`;
+    const token = process.env.BEARER_TOKEN;
+    
     try {
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+        });
 
         if (!response.ok) {
             try {
@@ -68,16 +62,12 @@ export async function fetchChapterText(version: string, bookName: string, chapte
 
         const data: ApiResponse = await response.json();
 
-        if (data.status !== 'success' || !data.chapter || !data.chapter.verses) {
-            throw new Error(data.msg || 'A API retornou uma resposta inesperada.');
+        if (!data.verses) {
+            throw new Error('A API retornou uma resposta inesperada.');
         }
 
         return {
-            chapter: {
-                number: data.chapter.number,
-                verses: data.chapter.verses.length,
-            },
-            verses: data.chapter.verses,
+            verses: data.verses.map(v => ({ number: v.verse_number, text: v.text })),
         };
 
     } catch (error: any) {
