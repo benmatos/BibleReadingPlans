@@ -13,7 +13,6 @@ import { AudioPlayer } from './audio-player';
 import { bibleBookOrder } from '@/data/bible-book-order';
 import { useSettings } from '@/hooks/use-settings';
 import { fetchChapterText } from '@/lib/bible-api';
-import { bibleBookAbbreviations } from '@/data/bible-book-abbreviations';
 
 interface Day {
   day: number;
@@ -50,26 +49,17 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
       
       const [bookName, chapterStr] = day.reading.split(' ');
       const chapter = parseInt(chapterStr, 10);
-      const bookAbbr = bibleBookAbbreviations[bookName];
-
-      if (!bookAbbr) {
-        setError(`Abreviação não encontrada para o livro: ${bookName}`);
-        setIsLoading(false);
-        return;
-      }
 
       try {
-        const data = await fetchChapterText(settings.bibleVersion, bookAbbr, chapter);
+        const data = await fetchChapterText(settings.bibleVersion, bookName, chapter);
         
         if (data.verses.length === 0) {
           throw new Error("Texto não encontrado para este capítulo.");
         }
 
-        // Format verses with superscript numbers
         const formattedText = data.verses.map(v => `<sup class="pr-2 font-bold">${v.number}</sup>${v.text}`).join(' ');
         setVersesText(formattedText);
         
-        // Build audio URL
         const bookNumber = bibleBookOrder[bookName];
 
         if (bookNumber) {
@@ -89,6 +79,7 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
 
   const getVersionAbbreviation = (version: string) => {
     if (version === 'acf') return 'ACF';
+    if (version === 'nvi') return 'NVI';
     return version.toUpperCase();
   }
 
