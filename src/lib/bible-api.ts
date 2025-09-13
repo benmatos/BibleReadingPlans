@@ -24,12 +24,19 @@ export async function fetchChapterText(version: string, bookAbbr: string, chapte
         const response = await fetch(url, {
             headers: {
                 'Authorization': `Bearer ${API_TOKEN}`
-            }
+            },
+            cache: 'no-store' // Evita cache para garantir que sempre busquemos dados frescos
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+            try {
+                // Tenta ler a resposta de erro como JSON primeiro
+                const errorData = await response.json();
+                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+            } catch (jsonError) {
+                // Se falhar (ex: a resposta é HTML), lança um erro genérico
+                throw new Error(`HTTP error! status: ${response.status}. A resposta não é um JSON válido.`);
+            }
         }
 
         return await response.json();
