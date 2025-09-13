@@ -24,8 +24,7 @@ export async function fetchChapterText(version: string, bookAbbr: string, chapte
         const response = await fetch(url, {
             headers: {
                 'Authorization': `Bearer ${API_TOKEN}`
-            },
-            cache: 'no-store' // Evita cache para garantir que sempre busquemos dados frescos
+            }
         });
 
         if (!response.ok) {
