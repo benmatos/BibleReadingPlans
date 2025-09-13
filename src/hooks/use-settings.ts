@@ -6,7 +6,7 @@ import { useState, useEffect, useCallback } from "react";
 const SETTINGS_KEY = "bible-reading-settings";
 
 export type Theme = "light" | "dark" | "system";
-export type BibleVersion = "almeida" | "aa";
+export type BibleVersion = "acf" | "nvi";
 
 interface Settings {
   theme: Theme;
@@ -15,13 +15,12 @@ interface Settings {
 
 const defaultSettings: Settings = {
   theme: "system",
-  bibleVersion: "almeida",
+  bibleVersion: "acf",
 };
 
 export function useSettings() {
   const [settings, setSettings] = useState<Settings>(defaultSettings);
-  const [isLoaded, setIsLoaded] = useState(false);
-
+  
   useEffect(() => {
     let savedSettings: Partial<Settings> = {};
     try {
@@ -35,10 +34,9 @@ export function useSettings() {
     } catch (error) {
       console.error("Failed to load settings from localStorage", error);
     }
-    setSettings((prev) => ({ ...prev, ...savedSettings }));
-    setIsLoaded(true);
+    setSettings((prev) => ({ ...defaultSettings, ...savedSettings }));
   }, []);
-
+  
   const updateSettings = useCallback((newSettings: Partial<Settings>) => {
     setSettings(prevSettings => {
         const updatedSettings = { ...prevSettings, ...newSettings };
@@ -60,8 +58,6 @@ export function useSettings() {
   };
 
   useEffect(() => {
-    if (!isLoaded) return;
-    
     const root = window.document.documentElement;
     const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
     const currentTheme = settings.theme === "system" ? systemTheme : settings.theme;
@@ -69,7 +65,7 @@ export function useSettings() {
     root.classList.remove("light", "dark");
     root.classList.add(currentTheme);
 
-  }, [settings.theme, isLoaded]);
+  }, [settings.theme]);
 
   return { 
     settings,

@@ -12,6 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { AudioPlayer } from './audio-player';
 import { bibleBookOrder } from '@/data/bible-book-order';
 import { useSettings } from '@/hooks/use-settings';
+import { fetchChapterText } from '@/lib/bible-api';
+import { bibleBookAbbreviations } from '@/data/bible-book-abbreviations';
 
 interface Day {
   day: number;
@@ -27,23 +29,6 @@ interface ReadingDayViewProps {
   isFirstDay: boolean;
   isLastDay: boolean;
 }
-
-interface Verse {
-    book_name: string;
-    chapter: number;
-    verse: number;
-    text: string;
-}
-
-interface TextApiResponse {
-    reference: string;
-    verses: Verse[];
-    text: string;
-    translation_id: string;
-    translation_name: string;
-    translation_note: string;
-}
-
 
 export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelectDay, isFirstDay, isLastDay }: ReadingDayViewProps) {
   const [versesText, setVersesText] = useState('');
@@ -63,32 +48,28 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
       setVersesText('');
       setAudioUrl(null);
       
-      const readingRef = day.reading.replace(/\s/g, '+');
-      const bibleVersion = settings.bibleVersion || 'almeida';
+      const [bookName, chapterStr] = day.reading.split(' ');
+      const chapter = parseInt(chapterStr, 10);
+      const bookAbbr = bibleBookAbbreviations[bookName];
+
+      if (!bookAbbr) {
+        setError(`Abreviação não encontrada para o livro: ${bookName}`);
+        setIsLoading(false);
+        return;
+      }
 
       try {
-        const response = await fetch(`https://bible-api.com/${readingRef}?translation=${bibleVersion}`);
+        const data = await fetchChapterText(settings.bibleVersion, bookAbbr, chapter);
         
-        if (!response.ok) {
-            let errorMsg = `Falha ao buscar texto: ${response.statusText}`;
-            try {
-                const errorData = await response.json();
-                errorMsg = `Falha ao buscar texto: ${errorData.error || response.statusText}`;
-            } catch (e) {
-                // Ignore if response is not JSON
-            }
-          throw new Error(errorMsg);
+        if (data.verses.length === 0) {
+          throw new Error("Texto não encontrado para este capítulo.");
         }
 
-        const data: TextApiResponse = await response.json();
-        
         // Format verses with superscript numbers
-        const formattedText = data.verses.map(v => `<sup class="pr-2 font-bold">${v.verse}</sup>${v.text}`).join(' ');
+        const formattedText = data.verses.map(v => `<sup class="pr-2 font-bold">${v.number}</sup>${v.text}`).join(' ');
         setVersesText(formattedText);
         
         // Build audio URL
-        const bookName = data.verses[0].book_name;
-        const chapter = data.verses[0].chapter;
         const bookNumber = bibleBookOrder[bookName];
 
         if (bookNumber) {
@@ -107,8 +88,7 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
   }, [day, settings.bibleVersion]);
 
   const getVersionAbbreviation = (version: string) => {
-    if (version === 'almeida') return 'ACF';
-    if (version === 'aa') return 'NVI';
+    if (version === 'acf') return 'ACF';
     return version.toUpperCase();
   }
 
