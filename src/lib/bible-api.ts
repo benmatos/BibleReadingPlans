@@ -56,7 +56,7 @@ export async function fetchChapterText(version: string, bookName: string, chapte
                 const errorData = await response.json();
                 throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
             } catch (jsonError) {
-                throw new Error(`HTTP error! status: ${response.status}. A resposta não é um JSON válido.`);
+                throw new Error(url+`\n\nHTTP error! status: ${response.status}. A resposta não é um JSON válido.`);
             }
         }
 
