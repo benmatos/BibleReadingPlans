@@ -47,25 +47,7 @@ export function SettingsControls() {
                 </DropdownMenuContent>
             </DropdownMenu>
         </div>
-        <div className="flex items-center justify-between">
-            <Label className="text-sm text-sidebar-foreground">Versão</Label>
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="text-sidebar-foreground h-8 px-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
-                    <Book className="mr-2 h-4 w-4" />
-                    <span>{BIBLE_VERSIONS[settings.bibleVersion as keyof typeof BIBLE_VERSIONS] || 'Almeida'}</span>
-                </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setBibleVersion("acf")}>
-                    Almeida
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setBibleVersion("nvi")}>
-                    NVI
-                </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
-        </div>
+        
     </div>
   );
 }

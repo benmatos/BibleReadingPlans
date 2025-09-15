@@ -95,13 +95,13 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
               >
                 <SelectTrigger className="text-xl font-body">
                   <SelectValue>
-                    Dia {day.day}: {day.reading} ({getVersionAbbreviation(settings.bibleVersion)})
+                    {day.reading}
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {readingPlan.map(planDay => (
                     <SelectItem key={planDay.day} value={planDay.day.toString()}>
-                      Dia {planDay.day}: {planDay.reading} ({getVersionAbbreviation(settings.bibleVersion)})
+                      {planDay.reading}
                     </SelectItem>
                   ))}
                 </SelectContent>

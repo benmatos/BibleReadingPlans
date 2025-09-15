@@ -19,6 +19,7 @@ import {
   SidebarInset,
   SidebarTrigger,
   SidebarFooter,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { ReadingDayView } from '@/components/reading-day-view';
 import { Settings, BookOpen } from 'lucide-react';
@@ -79,8 +80,7 @@ function PageSkeleton() {
   )
 }
 
-
-export default function BibleReadingPlanPage() {
+function BibleReadingPageComponent() {
   const [isClient, setIsClient] = useState(false);
   const { plans, isLoaded: plansLoaded } = usePlans();
   const [selectedPlan, setSelectedPlan] = useState<ReadingPlan | null>(null);
@@ -88,6 +88,8 @@ export default function BibleReadingPlanPage() {
   const [selectedDay, setSelectedDay] = useState<Day | null>(null);
   const { isLoaded: progressLoaded } = useProgress(selectedPlan?.id);
   const { getLastReadDay, setLastReadDay, isLoaded: lastReadLoaded } = useLastRead();
+  const { isMobile, setOpenMobile } = useSidebar();
+
 
   useEffect(() => {
     setIsClient(true);
@@ -151,7 +153,9 @@ export default function BibleReadingPlanPage() {
   const handleSelectPlan = (plan: ReadingPlan) => {
     if (plan.id !== selectedPlan?.id) {
         setSelectedPlan(plan);
-        // Let the useEffect handle the plan generation and day selection
+    }
+    if (isMobile) {
+      setOpenMobile(false);
     }
   }
 
@@ -193,7 +197,7 @@ export default function BibleReadingPlanPage() {
   }
 
   return (
-    <SidebarProvider>
+    <>
       <Sidebar>
         <SidebarHeader className="text-center p-4">
             <div className="flex items-center gap-3">
@@ -282,6 +286,14 @@ export default function BibleReadingPlanPage() {
           )}
         </main>
       </SidebarInset>
-    </SidebarProvider>
+    </>
   );
+}
+
+export default function BibleReadingPlanPage() {
+    return (
+        <SidebarProvider>
+            <BibleReadingPageComponent />
+        </SidebarProvider>
+    )
 }

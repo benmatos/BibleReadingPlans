@@ -2,6 +2,7 @@
 'use server';
 
 import { bibleBookOrder } from "@/data/bible-book-order";
+import { bibleBooksARC } from "@/data/books";
 
 interface Verse {
     verse_id: number;
@@ -26,8 +27,11 @@ const versionMap: Record<string, number> = {
 
 export async function fetchChapterText(version: string, bookName: string, chapter: number): Promise<ChapterResponse> {
     
-    const versionId = versionMap[version];
-    const bookId = bibleBookOrder[bookName];
+    const versionId = 9 //versionMap[version];
+    //const bookId = bibleBookOrder[bookName];
+    const bookId = bibleBooksARC.find(book => book.name === bookName)?.id;
+
+    console.log(versionId, bookId);
 
     if (!versionId || !bookId) {
         throw new Error("Versão ou livro inválido.");
