@@ -2,7 +2,7 @@
 "use client";
 
 import { useSettings } from "@/hooks/use-settings";
-import { Book, Moon, Sun } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,13 +13,8 @@ import {
 import { Label } from "@/components/ui/label";
 import { Separator } from "./ui/separator";
 
-const BIBLE_VERSIONS = {
-    'acf': 'Almeida',
-    'nvi': 'NVI'
-} as const;
-
 export function SettingsControls() {
-  const { settings, setTheme, setBibleVersion } = useSettings();
+  const { setTheme } = useSettings();
 
   return (
     <div className="p-2 space-y-2">

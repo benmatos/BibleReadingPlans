@@ -9,8 +9,6 @@ import { Skeleton } from './ui/skeleton';
 import { ScrollArea } from './ui/scroll-area';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AudioPlayer } from './audio-player';
-import { bibleBookOrder } from '@/data/bible-book-order';
 import { useSettings } from '@/hooks/use-settings';
 import { fetchChapterText } from '@/lib/bible-api';
 
@@ -33,7 +31,6 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
   const [versesText, setVersesText] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const { settings } = useSettings();
 
   useEffect(() => {
@@ -45,7 +42,6 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
       setIsLoading(true);
       setError(null);
       setVersesText('');
-      setAudioUrl(null);
       
       const [bookName, chapterStr] = day.reading.split(' ');
       const chapter = parseInt(chapterStr, 10);
@@ -59,13 +55,6 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
 
         const formattedText = data.verses.map(v => `<sup class="pr-2 font-bold">${v.number}</sup>${v.text}`).join(' ');
         setVersesText(formattedText);
-        
-        const bookNumber = bibleBookOrder[bookName];
-
-        if (bookNumber) {
-            const url = `https://www.wordproaudio.org/bibles/app/audio/2_BR/${bookNumber}/${chapter}.mp3`;
-            setAudioUrl(url);
-        }
 
       } catch (e: any) {
         setError(e.message || 'Ocorreu um erro ao buscar os dados.');
@@ -76,12 +65,6 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
 
     fetchScripture();
   }, [day, settings.bibleVersion]);
-
-  const getVersionAbbreviation = (version: string) => {
-    if (version === 'acf') return 'ACF';
-    if (version === 'nvi') return 'NVI';
-    return version.toUpperCase();
-  }
 
   return (
     <div className="max-w-4xl mx-auto animate-in fade-in duration-300">
@@ -106,7 +89,6 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
                   ))}
                 </SelectContent>
               </Select>
-               <AudioPlayer audioUrl={audioUrl} isLoading={isLoading} />
             </div>
           </div>
         </CardHeader>

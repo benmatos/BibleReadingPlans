@@ -6,7 +6,7 @@ import { useState, useEffect, useCallback } from "react";
 const SETTINGS_KEY = "bible-reading-settings";
 
 export type Theme = "light" | "dark" | "system";
-export type BibleVersion = "acf" | "nvi";
+export type BibleVersion = "acf"; // Only ACF is available locally
 
 interface Settings {
   theme: Theme;
@@ -34,10 +34,11 @@ export function useSettings() {
     } catch (error) {
       console.error("Failed to load settings from localStorage", error);
     }
-    setSettings((prev) => ({ ...defaultSettings, ...savedSettings }));
+    // Ensure bibleVersion is always 'acf' as it's the only one available
+    setSettings({ ...defaultSettings, ...savedSettings, bibleVersion: 'acf' });
   }, []);
   
-  const updateSettings = useCallback((newSettings: Partial<Settings>) => {
+  const updateSettings = useCallback((newSettings: Partial<Omit<Settings, 'bibleVersion'>>) => {
     setSettings(prevSettings => {
         const updatedSettings = { ...prevSettings, ...newSettings };
         try {
@@ -53,9 +54,10 @@ export function useSettings() {
     updateSettings({ theme });
   };
   
-  const setBibleVersion = (bibleVersion: BibleVersion) => {
-    updateSettings({ bibleVersion });
-  };
+  // Bible version is fixed, so this function is no longer needed.
+  // const setBibleVersion = (bibleVersion: BibleVersion) => {
+  //   updateSettings({ bibleVersion });
+  // };
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -69,7 +71,7 @@ export function useSettings() {
 
   return { 
     settings,
-    setTheme, 
-    setBibleVersion,
+    setTheme,
+    // setBibleVersion is removed
   };
 }
