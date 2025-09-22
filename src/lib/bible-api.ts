@@ -13,12 +13,7 @@ export async function fetchChapterText(version: string, bookName: string, chapte
         throw new Error("Somente a versão 'acf' está disponível localmente.");
     }
 
-    // Normalize book name to match file name format (e.g., "1 João" -> "1_joao.json")
-    const bookFileName = bookName
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/\s/g, '_') + '.json';
+    const bookFileName = bookName.toLowerCase().replace(/\s/g, '_') + '.json';
         
     const filePath = path.join(process.cwd(), 'src', 'data', 'bible', version, bookFileName);
 
@@ -26,8 +21,7 @@ export async function fetchChapterText(version: string, bookName: string, chapte
         const fileContent = await fs.readFile(filePath, 'utf-8');
         const bookData = JSON.parse(fileContent);
         
-        // Ensure chapters property exists and is an array
-        if (!bookData.chapters || !Array.isArray(bookData.chapters)) {
+        if (!bookData.chapters || !Array.isArray(bookData.chapters) || bookData.chapters.length === 0) {
              throw new Error(`Arquivo do livro '${bookName}' está mal formatado ou não contém capítulos.`);
         }
 
