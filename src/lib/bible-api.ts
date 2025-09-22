@@ -3,6 +3,8 @@
 
 import { bibleBookOrder } from "@/data/bible-book-order";
 import { bibleBooksARC } from "@/data/books";
+import {promises as fs} from 'fs';
+import path from 'path';
 
 interface Verse {
     verse_id: number;
@@ -25,13 +27,41 @@ const versionMap: Record<string, number> = {
     nvi: 2, // Nova Versão Internacional
 };
 
+async function getLocalChapter(version: string, bookName: string, chapter: number): Promise<ChapterResponse | null> {
+    if (version !== 'acf') {
+        return null;
+    }
+    const bookFileName = bookName.toLowerCase().replace(/\s/g, '_') + '.json';
+    const filePath = path.join(process.cwd(), 'src', 'data', 'bible', version, bookFileName);
+
+    try {
+        const fileContent = await fs.readFile(filePath, 'utf-8');
+        const bookData = JSON.parse(fileContent);
+        const chapterData = bookData.chapters.find((c: any) => c.chapter === chapter);
+
+        if (chapterData) {
+            return {
+                verses: chapterData.verses.map((v: any) => ({ number: v.verse, text: v.text }))
+            };
+        }
+        return null;
+    } catch (error) {
+        console.warn(`Could not load local chapter for ${bookName} ${chapter}:`, error);
+        return null;
+    }
+}
+
+
 export async function fetchChapterText(version: string, bookName: string, chapter: number): Promise<ChapterResponse> {
     
+    const localData = await getLocalChapter(version, bookName, chapter);
+    if (localData) {
+        return localData;
+    }
+
     const versionId = 9 //versionMap[version];
-    //const bookId = bibleBookOrder[bookName];
     const bookId = bibleBooksARC.find(book => book.name === bookName)?.id;
 
-    console.log(versionId, bookId);
 
     if (!versionId || !bookId) {
         throw new Error("Versão ou livro inválido.");
