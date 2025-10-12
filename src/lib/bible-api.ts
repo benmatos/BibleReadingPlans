@@ -12,8 +12,12 @@ export async function fetchChapterText(version: string, bookName: string, chapte
     if (version !== 'acf') {
         throw new Error("Somente a versão 'acf' está disponível localmente.");
     }
+    
+    if (isNaN(chapter) || chapter < 1) {
+        throw new Error(`Número de capítulo inválido: ${chapter}`);
+    }
 
-    const bookFileName = bookName.toLowerCase().replace(/\s/g, '_') + '.json';
+    const bookFileName = bookName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s/g, '_') + '.json';
         
     const filePath = path.join(process.cwd(), 'src', 'data', 'bible', version, bookFileName);
 

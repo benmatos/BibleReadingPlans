@@ -43,8 +43,16 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
       setError(null);
       setVersesText('');
       
-      const [bookName, chapterStr] = day.reading.split(' ');
+      const readingParts = day.reading.split(' ');
+      const chapterStr = readingParts.pop() || '1';
+      const bookName = readingParts.join(' ');
       const chapter = parseInt(chapterStr, 10);
+      
+      if (isNaN(chapter)) {
+        setError(`Capítulo inválido: ${chapterStr}`);
+        setIsLoading(false);
+        return;
+      }
 
       try {
         const data = await fetchChapterText(settings.bibleVersion, bookName, chapter);
