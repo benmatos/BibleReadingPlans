@@ -1,5 +1,38 @@
 
 {
   "book": "2 Samuel",
-  "chapters": []
+  "chapters": [
+    {
+      "chapter": 1,
+      "verses": [
+        { "verse": 1, "text": "E SUCEDEU, depois da morte de Saul, que, voltando Davi da derrota dos amalequitas, ficou dois dias em Ziclague;" },
+        { "verse": 2, "text": "Ao terceiro dia, eis que um homem veio do arraial de Saul, com as vestes rotas e com terra sobre a cabeça; e, chegando ele a Davi, se lançou no chão, e se inclinou." },
+        { "verse": 3, "text": "E disse-lhe Davi: De onde vens? E ele lhe disse: Escapei do arraial de Israel." },
+        { "verse": 4, "text": "E disse-lhe Davi: Como foi o negócio? Faze-mo saber. E ele disse: O povo fugiu da peleja, e muitos do povo caíram e morreram, como também Saul e Jônatas, seu filho, morreram." },
+        { "verse": 5, "text": "E disse Davi ao moço que lhe dava as novas: Como sabes tu que Saul e Jônatas, seu filho, são mortos?" },
+        { "verse": 6, "text": "Então disse o moço que lhe dava as novas: Chegando eu, por acaso, ao monte de Gilboa, eis que Saul estava encostado sobre a sua lança, e eis que os carros e os cavaleiros apertavam com ele." },
+        { "verse": 7, "text": "E, olhando ele para trás, viu-me a mim, e chamou-me; e eu disse: Eis-me aqui." },
+        { "verse": 8, "text": "E ele me disse: Quem és tu? E eu lhe disse: Sou amalequita." },
+        { "verse": 9, "text": "Então ele me disse: Peço-te, põe-te sobre mim, e mata-me, porque angústias me têm cercado, pois toda a minha vida ainda está em mim." },
+        { "verse": 10, "text": "Eu, pois, me pus sobre ele, e o matei, porque bem sabia eu que não viveria depois da sua queda, e tomei a coroa que tinha na sua cabeça, e o bracelete que trazia no seu braço, e os trouxe aqui a meu senhor." },
+        { "verse": 11, "text": "Então apanhou Davi as suas vestes, e as rasgou; como também todos os homens que estavam com ele." },
+        { "verse": 12, "text": "E prantearam, e choraram, e jejuaram até à tarde por Saul, e por Jônatas, seu filho, e pelo povo do SENHOR, e pela casa de Israel, porque tinham caído à espada." },
+        { "verse": 13, "text": "Disse então Davi ao moço que lhe dera as novas: De onde és tu? E disse ele: Sou filho de um homem estrangeiro, amalequita." },
+        { "verse": 14, "text": "E disse-lhe Davi: Como não temeste tu estender a tua mão para matares ao ungido do SENHOR?" },
+        { "verse": 15, "text": "Então chamou Davi a um dos moços, e disse: Chega, e lança-te sobre ele. E ele o feriu, e morreu." },
+        { "verse": 16, "text": "E disse-lhe Davi: O teu sangue seja sobre a tua cabeça, porque a tua própria boca testificou contra ti, dizendo: Eu matei o ungido do SENHOR." },
+        { "verse": 17, "text": "E lamentou Davi a Saul e a Jônatas, seu filho, com esta lamentação," },
+        { "verse": 18, "text": "(Dizendo ele que ensinassem aos filhos de Judá o uso do arco. Eis que está escrito no livro de Jasher):" },
+        { "verse": 19, "text": "Ah, ornamento de Israel! nos teus altos fui ferido. Como caíram os valorosos!" },
+        { "verse": 20, "text": "Não o anuncieis em Gate, não o publiqueis nas ruas de Asquelom, para que não se alegrem as filhas dos filisteus, para que não exultem as filhas dos incircuncisos." },
+        { "verse": 21, "text": "Vós, montes de Gilboa, nem orvalho, nem chuva caia sobre vós, nem haja campos de ofertas alçadas, pois aí desprezivelmente foi arrojado o escudo dos valorosos, o escudo de Saul, como se não fora ungido com óleo." },
+        { "verse": 22, "text": "Do sangue dos feridos, da gordura dos valorosos, nunca recuou o arco de Jônatas, nem voltou vazia a espada de Saul." },
+        { "verse": 23, "text": "Saul e Jônatas, tão amados e queridos na sua vida, também na sua morte não se separaram; eram mais ligeiros do que as águias, mais fortes do que os leões." },
+        { "verse": 24, "text": "Vós, filhas de Israel, chorai por Saul, que vos vestia de escarlata em delícias, que vos adornava de enfeites de ouro as vossas vestes." },
+        { "verse": 25, "text": "Como caíram os valorosos no meio da peleja! Jônatas nos teus altos foi ferido." },
+        { "verse": 26, "text": "Angustiado estou por ti, meu irmão Jônatas; quão amabilíssimo me eras! Mais maravilhoso me era o teu amor do que o amor das mulheres." },
+        { "verse": 27, "text": "Como caíram os valorosos, e pereceram as armas de guerra!" }
+      ]
+    }
+  ]
 }
