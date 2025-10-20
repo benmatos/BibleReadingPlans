@@ -8,6 +8,14 @@ interface ChapterResponse {
     verses: { number: number; text: string }[];
 }
 
+function normalizeBookName(bookName: string): string {
+    return bookName
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "") // Remove acentos
+        .replace(/\s+/g, '_'); // Substitui espaços por underscores
+}
+
 export async function fetchChapterText(version: string, bookName: string, chapter: number): Promise<ChapterResponse> {
     if (version !== 'acf') {
         throw new Error("Somente a versão 'acf' está disponível localmente.");
@@ -17,7 +25,7 @@ export async function fetchChapterText(version: string, bookName: string, chapte
         throw new Error(`Número de capítulo inválido: ${chapter}`);
     }
 
-    const bookFileName = bookName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s/g, '_') + '.json';
+    const bookFileName = normalizeBookName(bookName) + '.json';
         
     const filePath = path.join(process.cwd(), 'src', 'data', 'bible', version, bookFileName);
 
@@ -41,6 +49,9 @@ export async function fetchChapterText(version: string, bookName: string, chapte
 
     } catch (error) {
         console.error(`Erro ao carregar o capítulo local para ${bookName} ${chapter}:`, error);
+        if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+            throw new Error(`Arquivo do livro '${bookName}' (${bookFileName}) não encontrado. Verifique se o nome está correto e o arquivo existe.`);
+        }
         throw new Error(`Não foi possível carregar o texto para ${bookName} ${chapter}. Verifique se o arquivo JSON está correto.`);
     }
 }
