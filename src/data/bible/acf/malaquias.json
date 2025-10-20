@@ -1,4 +1,3 @@
-
 {
   "book": "Malaquias",
   "chapters": [
@@ -7,11 +6,11 @@
       "verses": [
         {
           "verse": 1,
-          "text": "PESO da palavra do Senhor contra Israel, pelo ministério de Malaquias."
+          "text": "Peso da palavra do SENHOR contra Israel, por intermédio de Malaquias."
         },
         {
           "verse": 2,
-          "text": "Eu vos amei, diz o Senhor. Mas vós dizeis: Em que nos amaste? Não foi Esaú irmão de Jacó? disse o Senhor; todavia amei a Jacó,"
+          "text": "Eu vos tenho amado, diz o Senhor. Mas vós dizeis: Em que nos tens amado? Não era Esaú irmão de Jacó? disse o Senhor; todavia amei a Jacó,"
         },
         {
           "verse": 3,
@@ -19,7 +18,7 @@
         },
         {
           "verse": 4,
-          "text": "Ainda que Edom diga: Empobrecidos somos, porém tornaremos a edificar os lugares desertos; assim diz o Senhor dos Exércitos: Eles edificarão, e eu destruirei; e lhes chamarão: Termo de impiedade, e povo contra quem o Senhor está irado para sempre."
+          "text": "Ainda que Edom diga: Empobrecidos estamos, porém tornaremos a edificar os lugares desolados; assim diz o Senhor dos Exércitos: Eles edificarão, e eu destruirei; e lhes chamarão: Termo de impiedade, e povo contra quem o Senhor está irado para sempre."
         },
         {
           "verse": 5,
@@ -27,7 +26,7 @@
         },
         {
           "verse": 6,
-          "text": "O filho honra o pai, e o servo o seu senhor; se eu sou pai, onde está a minha honra? E, se eu sou senhor, onde está o meu temor? diz o Senhor dos Exércitos a vós, ó sacerdotes, que desprezais o meu nome. E vós dizeis: Em que nós desprezamos o teu nome?"
+          "text": "O filho honra o pai, e o servo o seu senhor; se eu sou pai, onde está a minha honra? E, se eu sou senhor, onde está o meu temor? diz o SENHOR dos Exércitos a vós, ó sacerdotes, que desprezais o meu nome. E vós dizeis: Em que nós temos desprezado o teu nome?"
         },
         {
           "verse": 7,
@@ -39,11 +38,11 @@
         },
         {
           "verse": 9,
-          "text": "Agora, pois, suplicai o favor de Deus, para que se compadeça de nós; com tal oferta da vossa mão, aceitará ele a vossa pessoa? diz o Senhor dos Exércitos."
+          "text": "Agora, pois, eu suplico, pedi a Deus, que ele seja misericordioso conosco; isto veio das vossas mãos; aceitará ele a vossa pessoa? diz o Senhor dos Exércitos."
         },
         {
           "verse": 10,
-          "text": "Quem há também entre vós que feche as portas por nada, e não acenda debalde o fogo do meu altar? Eu não tenho prazer em vós, diz o Senhor dos Exércitos, nem aceitarei da vossa mão a oferta."
+          "text": "Quem há também entre vós que feche as portas por nada, e não acenda debalde o fogo do meu altar? Eu não tenho prazer em vós, diz o Senhor dos Exércitos, nem aceitarei oferta da vossa mão."
         },
         {
           "verse": 11,
@@ -66,14 +65,17 @@
     {
       "chapter": 2,
       "verses": [
-        { "verse": 1, "text": "E agora, ó sacerdotes, este mandamento é para vós." },
+        {
+          "verse": 1,
+          "text": "Agora, ó sacerdotes, este mandamento é para vós."
+        },
         {
           "verse": 2,
-          "text": "Se não ouvirdes e se não propuserdes, no vosso coração, dar honra ao meu nome, diz o Senhor dos Exércitos, enviarei a maldição contra vós, e amaldiçoarei as vossas bênçãos; e já as tenho amaldiçoado, porque vós não pondes isso no coração."
+          "text": "Se não ouvirdes e se não propuserdes, no vosso coração, dar honra ao meu nome, diz o Senhor dos Exércitos, enviarei a maldição contra vós, e amaldiçoarei as vossas bênçãos; e também já as tenho amaldiçoado, porque não aplicais a isso o coração."
         },
         {
           "verse": 3,
-          "text": "Eis que reprovarei a vossa semente, e espalharei esterco sobre os vossos rostos, o esterco das vossas festas; e para junto dele sereis levados."
+          "text": "Eis que reprovarei a vossa semente, e espalharei esterco sobre os vossos rostos, o esterco das vossas festas solenes; e para junto deste sereis levados."
         },
         {
           "verse": 4,
@@ -81,11 +83,11 @@
         },
         {
           "verse": 5,
-          "text": "Minha aliança com ele foi de vida e de paz, e eu lhas dei para que temesse; e me temeu, e assombrou-se por causa do meu nome."
+          "text": "Minha aliança com ele foi de vida e de paz, e eu lhas dei para que temesse; então temeu-me, e assombrou-se por causa do meu nome."
         },
         {
           "verse": 6,
-          "text": "A lei da verdade esteve na sua boca, e a iniqüidade não se achou nos seus lábios; andou comigo em paz e em retidão, e da iniqüidade apartou a muitos."
+          "text": "A lei da verdade esteve na sua boca, e a iniqüidade não se achou nos seus lábios; andou comigo em paz e em retidão, e da iniqüidade converteu a muitos."
         },
         {
           "verse": 7,
@@ -109,11 +111,11 @@
         },
         {
           "verse": 12,
-          "text": "O Senhor destruirá das tendas de Jacó o homem que fizer isto, o que vela, e o que responde, e o que oferece oferta ao Senhor dos Exércitos."
+          "text": "O Senhor destruirá das tendas de Jacó o homem que fizer isto, o que vela, e o que responde, e o que apresenta uma oferta ao Senhor dos Exércitos."
         },
         {
           "verse": 13,
-          "text": "Ainda fazeis isto outra vez, cobrindo o altar do Senhor de lágrimas, com choro e com gemidos; de sorte que ele não atenta mais para a oferta, nem a aceita com prazer da vossa mão."
+          "text": "Ainda fazeis isto outra vez, cobrindo o altar do Senhor de lágrimas, com choro e com gemidos; de sorte que ele não olha mais para a oferta, nem a aceitará com prazer da vossa mão."
         },
         {
           "verse": 14,
@@ -121,15 +123,15 @@
         },
         {
           "verse": 15,
-          "text": "E não fez ele somente um, sobejando-lhe espírito? E por que somente um? Ele buscava uma descendência para Deus. Portanto guardai-vos em vosso espírito, e ninguém seja infiel para com a mulher da sua mocidade."
+          "text": "E não fez ele somente um, ainda que lhe sobrava o espírito? E por que somente um? Ele buscava uma descendência para Deus. Portanto guardai-vos em vosso espírito, e ninguém seja infiel para com a mulher da sua mocidade."
         },
         {
           "verse": 16,
-          "text": "Porque o Senhor, o Deus de Israel, diz que odeia o repúdio, e aquele que encobre a violência com a sua veste, diz o Senhor dos Exércitos; portanto guardai-vos em vosso espírito, e não sejais desleais."
+          "text": "Porque o Senhor, o Deus de Israel diz que odeia o repúdio, e aquele que encobre a violência com a sua roupa, diz o Senhor dos Exércitos; portanto guardai-vos em vosso espírito, e não sejais desleais."
         },
         {
           "verse": 17,
-          "text": "Enfadais ao Senhor com vossas palavras; e ainda dizeis: Em que o enfadamos? Nisto que dizeis: Qualquer que faz o mal passa por bom aos olhos do Senhor, e desses é que ele gosta, ou, onde está o Deus do juízo?"
+          "text": "Enfadais ao Senhor com vossas palavras; e ainda dizeis: Em que o enfadamos? Nisto que dizeis: Qualquer que faz o mal passa por bom aos olhos do Senhor, e desses é que ele se agrada, ou, onde está o Deus do juízo?"
         }
       ]
     },
@@ -138,7 +140,7 @@
       "verses": [
         {
           "verse": 1,
-          "text": "EIS que eu envio o meu anjo, que preparará o caminho diante de mim; e de repente virá ao seu templo o Senhor, a quem vós buscais; e o anjo da aliança, a quem vós desejais, eis que ele vem, diz o Senhor dos Exércitos."
+          "text": "Eis que eu envio o meu mensageiro, que preparará o caminho diante de mim; e de repente virá ao seu templo o Senhor, a quem vós buscais; e o mensageiro da aliança, a quem vós desejais, eis que ele vem, diz o SENHOR dos Exércitos."
         },
         {
           "verse": 2,
@@ -146,7 +148,7 @@
         },
         {
           "verse": 3,
-          "text": "E assentar-se-á como fundidor e purificador de prata; e purificará os filhos de Levi, e os refinará como ouro e como prata; então ao Senhor trarão ofertas em justiça."
+          "text": "E assentar-se-á como fundidor e purificador de prata; e purificará os filhos de Levi, e os refinará como ouro e como prata; então ao Senhor trarão oferta em justiça."
         },
         {
           "verse": 4,
@@ -154,7 +156,7 @@
         },
         {
           "verse": 5,
-          "text": "E chegar-me-ei a vós para juízo; e serei uma testemunha veloz contra os feiticeiros, e contra os adúlteros, e contra os que juram falsamente, e contra os que defraudam o diarista em seu salário, e a viúva, e o órfão, e que pervertem o direito do estrangeiro, e não me temem, diz o Senhor dos Exércitos."
+          "text": "E chegar-me-ei a vós para juízo; e serei uma testemunha veloz contra os feiticeiros, contra os adúlteros, contra os que juram falsamente, contra os que defraudam o diarista em seu salário, e a viúva, e o órfão, e que pervertem o direito do estrangeiro, e não me temem, diz o Senhor dos Exércitos."
         },
         {
           "verse": 6,
@@ -174,7 +176,7 @@
         },
         {
           "verse": 10,
-          "text": "Trazei todos os dízimos à casa do tesouro, para que haja mantimento na minha casa, e depois fazei prova de mim nisto, diz o Senhor dos Exércitos, se eu não vos abrir as janelas do céu, e не derramar sobre vós uma bênção tal até que não haja lugar suficiente para a recolherdes."
+          "text": "Trazei todos os dízimos à casa do tesouro, para que haja mantimento na minha casa, e depois fazei prova de mim nisto, diz o Senhor dos Exércitos, se eu não vos abrir as janelas do céu, e não derramar sobre vós uma bênção tal até que não haja lugar suficiente para a recolherdes."
         },
         {
           "verse": 11,
@@ -190,11 +192,11 @@
         },
         {
           "verse": 14,
-          "text": "Vós dizeis: Inútil é servir a Deus; que nos aproveita termos cuidado em guardar os seus preceitos, e em andar de luto diante do Senhor dos Exércitos?"
+          "text": "Vós tendes dito: Inútil é servir a Deus; que nos aproveita termos cuidado em guardar os seus preceitos, e em andar de luto diante do Senhor dos Exércitos?"
         },
         {
           "verse": 15,
-          "text": "Ora, pois, nós reputamos por bem-aventurados os soberbos; também os que cometem impiedade são edificados; e eles tentam a Deus, e escapam."
+          "text": "Ora, pois, nós reputamos por bem-aventurados os soberbos; também os que cometem impiedade são edificados; sim, eles tentam a Deus, e escapam."
         },
         {
           "verse": 16,
@@ -202,7 +204,7 @@
         },
         {
           "verse": 17,
-          "text": "E eles serão meus, diz o Senhor dos Exércitos; naquele dia que farei, serão para mim particular tesouro; poupá-los-ei, como um homem poupa a seu filho, que o serve."
+          "text": "E eles serão meus, diz o Senhor dos Exércitos; naquele dia serão para mim jóias; poupá-los-ei, como um homem poupa a seu filho, que o serve."
         },
         {
           "verse": 18,
@@ -215,7 +217,7 @@
       "verses": [
         {
           "verse": 1,
-          "text": "PORQUE, eis que aquele dia vem ardendo como fornalha; todos os soberbos, e todos os que cometem impiedade, serão como a palha; e o dia que está para vir os abrasará, diz o Senhor dos Exércitos, de sorte que lhes não deixará nem raiz nem ramo."
+          "text": "Porque eis que aquele dia vem ardendo como fornalha; todos os soberbos, e todos os que cometem impiedade, serão como a palha; e o dia que está para vir os abrasará, diz o SENHOR dos Exércitos, de sorte que lhes não deixará nem raiz nem ramo."
         },
         {
           "verse": 2,
@@ -223,7 +225,7 @@
         },
         {
           "verse": 3,
-          "text": "E pisareis os ímpios, porque se farão cinza debaixo das plantas de vossos pés, naquele dia que farei, diz o Senhor dos Exércitos."
+          "text": "E pisareis os ímpios, porque se farão cinza debaixo das plantas de vossos pés, naquele dia que estou preparando, diz o Senhor dos Exércitos."
         },
         {
           "verse": 4,
@@ -231,7 +233,7 @@
         },
         {
           "verse": 5,
-          "text": "Eis que eu vos envio o profeta Elias, antes que venha o grande e terrível dia do Senhor;"
+          "text": "Eis que eu vos enviarei o profeta Elias, antes que venha o grande e terrível dia do Senhor;"
         },
         {
           "verse": 6,
