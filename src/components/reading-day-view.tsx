@@ -169,14 +169,14 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
       
       <div className="flex justify-between mt-6">
         <Button onClick={() => onNavigate(-1)} disabled={isFirstDay} variant="outline" className="shadow-sm">
-          <ArrowLeft className="mr-2 h-4 w-4" /> Capítulo Anterior
+          <ArrowLeft className="mr-2 h-4 w-4" /> Anterior
         </Button>
             <div className="flex items-center gap-2">
               <Button onClick={() => { isSpeaking ? stopSpeaking() : speakCurrent(); }} disabled={isLoading} variant="secondary" className="shadow-sm">
                 {isSpeaking ? 'Parar leitura' : 'Ler capítulo'}
               </Button>
               <Button onClick={() => onNavigate(1)} disabled={isLastDay || isLoading} variant="outline" className="shadow-sm">
-                Próximo Capítulo <ArrowRight className="ml-2 h-4 w-4" />
+                Próximo<ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
       </div>
