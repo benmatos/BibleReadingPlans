@@ -31,6 +31,7 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
   const [versesText, setVersesText] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const { settings } = useSettings();
 
   useEffect(() => {
@@ -73,6 +74,43 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
 
     fetchScripture();
   }, [day, settings.bibleVersion]);
+
+  // TTS helpers (client-side Web Speech API)
+  const speakCurrent = () => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+      setError('Síntese de fala não suportada neste navegador.');
+      return;
+    }
+
+    if (!versesText) return;
+
+    const utterance = new SpeechSynthesisUtterance(stripHtml(versesText));
+    utterance.lang = 'pt-BR';
+    // prefer a pt-BR voice when available
+    const voices = window.speechSynthesis.getVoices();
+    const preferred = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('pt'));
+    if (preferred) utterance.voice = preferred;
+
+    utterance.onstart = () => setIsSpeaking(true);
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+
+    window.speechSynthesis.cancel(); // stop any existing
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const stopSpeaking = () => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    setIsSpeaking(false);
+  };
+
+  function stripHtml(html: string) {
+    // simple HTML stripper for the formatted versesText
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+  }
 
   return (
     <div className="max-w-4xl mx-auto animate-in fade-in duration-300">
@@ -133,9 +171,14 @@ export function ReadingDayView({ day, readingPlan, isLoaded, onNavigate, onSelec
         <Button onClick={() => onNavigate(-1)} disabled={isFirstDay} variant="outline" className="shadow-sm">
           <ArrowLeft className="mr-2 h-4 w-4" /> Capítulo Anterior
         </Button>
-        <Button onClick={() => onNavigate(1)} disabled={isLastDay || isLoading} variant="outline" className="shadow-sm">
-          Próximo Capítulo <ArrowRight className="ml-2 h-4 w-4" />
-        </Button>
+            <div className="flex items-center gap-2">
+              <Button onClick={() => { isSpeaking ? stopSpeaking() : speakCurrent(); }} disabled={isLoading} variant="secondary" className="shadow-sm">
+                {isSpeaking ? 'Parar leitura' : 'Ler capítulo'}
+              </Button>
+              <Button onClick={() => onNavigate(1)} disabled={isLastDay || isLoading} variant="outline" className="shadow-sm">
+                Próximo Capítulo <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
       </div>
     </div>
   );
