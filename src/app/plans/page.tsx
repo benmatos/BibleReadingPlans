@@ -24,15 +24,18 @@ import {
 } from "@/components/ui/select";
 import { bibleBooks } from '@/data/reading-plan';
 import { useState, useEffect } from 'react';
-import { Trash2, Edit, PlusCircle, ArrowLeft, BookOpen } from 'lucide-react';
+import { Trash2, Edit, PlusCircle, ArrowLeft, BookOpen, Share2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
+import { getShareUrl } from '@/lib/share-plan';
+import { useToast } from '@/hooks/use-toast';
 
 export default function ManagePlansPage() {
   const [isClient, setIsClient] = useState(false);
   const { plans, addPlan, updatePlan, deletePlan, isLoaded } = usePlans();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentPlan, setCurrentPlan] = useState<Partial<ReadingPlan> | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     setIsClient(true);
@@ -63,6 +66,22 @@ export default function ManagePlansPage() {
       setIsDialogOpen(false);
       setCurrentPlan(null);
   }
+
+  const handleShare = async (plan: ReadingPlan) => {
+    const url = getShareUrl(plan, window.location.origin);
+    try {
+      await navigator.clipboard.writeText(url);
+      toast({
+        title: 'Link copiado!',
+        description: 'O link de convite foi copiado para a área de transferência.',
+      });
+    } catch {
+      toast({
+        title: 'Link de convite',
+        description: url,
+      });
+    }
+  };
 
   if (!isClient) {
     return (
@@ -201,6 +220,10 @@ export default function ManagePlansPage() {
                     {/* Future content can go here, like progress */}
                     </CardContent>
                     <CardFooter className="flex justify-end gap-2">
+                    <Button variant="ghost" size="icon" onClick={() => handleShare(plan)}>
+                        <Share2 className="h-4 w-4" />
+                        <span className="sr-only">Compartilhar</span>
+                    </Button>
                     <Button variant="ghost" size="icon" onClick={() => openDialog(plan)}>
                         <Edit className="h-4 w-4" />
                         <span className="sr-only">Editar</span>
